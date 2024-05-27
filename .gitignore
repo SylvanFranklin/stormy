@@ -1,0 +1,10 @@
+*.png
+*.jpg
+*.jpeg
+*.tif
+__pycache__
+assets/gifts/.DS_Store
+assets/.DS_Store
+assets/skia.ttf
+assets/octo.tif
+assets/gfreg.ttf
