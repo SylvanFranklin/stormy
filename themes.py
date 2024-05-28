@@ -179,7 +179,7 @@ def compile_all():
                     font=glynnis_font,
                 )
 
-                body_para = textwrap.wrap(text, width=36)
+                body_para = textwrap.wrap(text, width=37)
                 current_h, pad = 45, 3
                 margins = 90
                 for line in body_para:
@@ -197,7 +197,18 @@ def compile_all():
                     current_h += h + pad
 
                 # convert to png
-                bg = bg.convert("RGB")
+                # make the bg 40% transparent
+                # bg.putalpha(128)
+                # template = Image.open("assets/poker_template.png")
+                # template.paste(
+                #     bg,
+                #     (
+                #         (template.width - bg.width) // 2,
+                #         (template.height - bg.height) // 2,
+                #     ),
+                #     bg,
+                # )
+
                 bg.save(f"themes_output/{theme}.png")
 
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{theme}.png")
