@@ -18,9 +18,14 @@ with open("themes.csv") as file:
 
     margin = 20
     x, y, i = 0, 0, 0
+    themes = []
     for line in reader:
         theme = line[0].upper().replace(" ", "")
         occurrence = line[2]
+        for _ in range(int(occurrence)):
+            themes.append(theme)
+
+    for theme in themes:
         try:
             card = Image.open(f"themes_output/{theme}.png").convert("RGBA")
         except FileNotFoundError:
