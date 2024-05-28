@@ -1,4 +1,4 @@
-def compile_all():
+def compile_all(for_print):
     from PIL import Image, ImageDraw, ImageFont
     import os
     import textwrap
@@ -196,20 +196,18 @@ def compile_all():
                     )
                     current_h += h + pad
 
-                # convert to png
-                # make the bg 40% transparent
-                # bg.putalpha(128)
-                # template = Image.open("assets/poker_template.png")
-                # template.paste(
-                #     bg,
-                #     (
-                #         (template.width - bg.width) // 2,
-                #         (template.height - bg.height) // 2,
-                #     ),
-                #     bg,
-                # )
+                if not for_print:
+                    back = Image.open("assets/rect.png")
+                    # paste at center
+                    back.paste(
+                        bg,
+                        ((back.width - bg.width) // 2, (back.height - bg.height) // 2),
+                        bg,
+                    )
+                    back.save(f"themes_output/{theme}.png")
 
-                bg.save(f"themes_output/{theme}.png")
+                else:
+                    bg.save(f"themes_output/{theme}.png")
 
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{theme}.png")
             # catch everything and print the error

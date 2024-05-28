@@ -2,8 +2,12 @@ import os
 import sys
 import csv
 from PIL import Image
+import themes
 
 with open("themes.csv") as file:
+    # ensure that we have all the themes for print
+    themes.compile_all(True)
+
     dpi = 300
     card_size = (int(2.5 * dpi), int(3.5 * dpi))
     paper = Image.new("RGB", (9 * dpi, 11 * dpi), (255, 255, 255))
