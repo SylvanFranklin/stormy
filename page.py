@@ -4,6 +4,11 @@ import csv
 from PIL import Image
 import themes
 
+# create a pages dir if it doesn't exist 
+if not os.path.exists("pages"):
+    os.mkdir("pages") 
+
+
 with open("themes.csv") as file:
     # ensure that we have all the themes for print
     themes.compile_all(True)
@@ -22,6 +27,9 @@ with open("themes.csv") as file:
     for line in reader:
         theme = line[0].upper().replace(" ", "")
         occurrence = line[2]
+        if occurrence == "":
+            occurrence = 1
+
         for _ in range(int(occurrence)):
             themes.append(theme)
 
@@ -46,5 +54,10 @@ with open("themes.csv") as file:
         if i % 9 == 0:
             x = 0
             y = 0
-            paper.save(f"page{(i//9)+1}.pdf", "PDF", resolution=300.0)
+            paper.save(f"pages/page{(i//9)+1}.pdf", "PDF", resolution=300.0)
             paper = Image.new("RGB", (9 * dpi, 11 * dpi), (255, 255, 255))
+
+
+
+
+
