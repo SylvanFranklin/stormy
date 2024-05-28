@@ -24,7 +24,7 @@ Rumors,Add or remove any Region Visited token (any player) and gain five Fame.,2
 Sack Palace,"allows sack palace (see rules) [temp visual change for playtesting, because text was too long]",5,
 Shifting Wind,Rotate current voyage card 45 degrees in either direction and apply new MP values.,1,
 Smooth Sea and Fair Wind,"Ignore all Storms (including from Divine Patroness) AND all Sea Circles cost 2 MP, all Coastal Circles 1 MP for you (only) on this turn.",2,
-Sunder,"Opposing hero's weapon breaks this combat: return to Gift pool, gain Fame equal to value.",2,
+Sunder,"Opposing hero's weapon breaks this combat: return to Gift pool, gain Fame equal to value.",,
 Syrian Pirates,Forces immediate Ship-to-Ship battle with Hero mid-voyage. Pirate strength 5d6 reduced by 1d6 for each sea AREA away from home territory. +2 Fame for every step of Pirates eliminated.,1,
 Threats,"+4d6 to one Alliance attempt. If unsuccessful, Palace becomes Allied to opposite side; lose 5 Fame x Palace Rank and move to adjacent Sea Circle.",2,
 Trial Combat,"Initiate ritual duel with Hero in same location. Opponent may decline at the cost of 5 Fame x current HPs (which you gain) and forfeits Combat bonus in following Ship-to-Ship battle [or Naval Engagement]. If opponent accepts, Trial Combat is to the death (see 000).",3,
