@@ -40,7 +40,7 @@ def compile_all():
 
                 if upgrade == "HERMES":
                     hermes_constant += 220
-                bg = Image.open("assets/upgrade_card.png").convert("RGBA")
+                bg = Image.open("assets/upgrade_card.tif").convert("RGBA")
 
                 # get the foreground image, first handling the pirate case
                 try:

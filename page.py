@@ -4,12 +4,12 @@ import csv
 from PIL import Image
 import themes
 
-# create a pages dir if it doesn't exist 
+# create a pages dir if it doesn't exist
 if not os.path.exists("pages"):
-    os.mkdir("pages") 
+    os.mkdir("pages")
 
 
-with open("themes.csv") as file:
+with open("upgrades.csv") as file:
     # ensure that we have all the themes for print
     themes.compile_all(True)
 
@@ -37,7 +37,7 @@ with open("themes.csv") as file:
         try:
             card = Image.open(f"themes_output/{theme}.png").convert("RGBA")
         except FileNotFoundError:
-            card = Image.open("assets/theme_card.png").convert("RGBA")
+            card = Image.open("assets/upgrade_card.tif").convert("RGBA")
             print(f"Missing {theme}", end="")
 
         card.thumbnail(card_size, Image.LANCZOS)
@@ -56,8 +56,3 @@ with open("themes.csv") as file:
             y = 0
             paper.save(f"pages/page{(i//9)+1}.pdf", "PDF", resolution=300.0)
             paper = Image.new("RGB", (9 * dpi, 11 * dpi), (255, 255, 255))
-
-
-
-
-
