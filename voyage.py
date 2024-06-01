@@ -1,17 +1,24 @@
 def compile_all():
-    from PIL import Image, ImageDraw, ImageFont
+    from PIL import Image, ImageDraw, ImageFont, ImageColor
     import os
     import textwrap
     import csv
-
-    def capitalize_words(text):
-        return " ".join([word.capitalize() for word in text.split(" ")])
 
     def textsize(text, font):
         im = Image.new(mode="P", size=(0, 0))
         draw = ImageDraw.Draw(im)
         _, _, width, height = draw.textbbox((0, 0), text=text, font=font)
         return width, height
+
+    def get_season_color(season):
+        if season == "Winter":
+            return "#2D649D"
+        elif season == "Spring":
+            return "#8DA074"
+        elif season == "Summer":
+            return "#DD922A"
+        elif season == "Fall":
+            return "#7B2F20"
 
     class colors:
         RED = "\033[31m"
@@ -20,102 +27,144 @@ def compile_all():
         YELLOW = "\033[33m"
         BLUE = "\033[34m"
 
-    # get all the images names from assets/upgrades
-    with open("upgrades.csv") as file:
-        print(colors.YELLOW + "Reading upgrades file" + colors.ENDC + "...")
+    with open("voyage.csv") as file:
+        print(colors.YELLOW + "Reading voyage file" + colors.ENDC + "...")
+        half = 425
+        base_x = 200
+        base_y = 500
+
+        circle_chords = [
+            (base_x, base_y),
+            (base_x + 175, base_y),
+            (base_x + 175 * 2, base_y),
+            (base_x, base_y + 175),
+            (base_x + 175, base_y + 175),
+            (base_x + 175 * 2, base_y + 175),
+            (base_x, base_y + 175 * 2),
+            (base_x + 175, base_y + 175 * 2),
+            (base_x + 175 * 2, base_y + 175 * 2),
+        ]
         image_size = (400, 600)
-        glynnis_font = ImageFont.truetype("assets/skia.ttf", 30)
-        available_upgrade_art = os.listdir("assets/upgrades")
-        available_upgrade_art
-        # .remove(".DS_Store")
+        glynnis_font = ImageFont.truetype("assets/skia.ttf", 36)
+        glynnis_font_title = ImageFont.truetype("assets/skia.ttf", 92)
         reader = csv.reader(file, skipinitialspace=True)
+        test_wind_vals = [16, 16, 16, 16, 0, 16, 16, 16, 16]
+
+        # see if there is a dir to save too (voyage)
+        if not os.path.exists("voyage_output"):
+            os.makedirs("voyage_output")
 
         # skip the first line
         next(reader)
+        i = 0
         for line in reader:
-            hermes_constant = 0
             try:
-                upgrade = line[0].upper().replace(" ", "")
-                text = line[1]
+                # here is a key for the csv file
+                # Winter,MOVE:,18,PIRATES,Aigyption Pelagos,STORM:,Issikon Pelagos,6d6,swept to:,Syria,Libya,STORM TABLE,
+                season = line[0]
+                mp = line[1]
+                storm_location = line[2]
+                storm_damage_hull = line[3]
+                storm_damage_crew = line[4]
+                swept_to = line[5]
 
-                if upgrade == "HERMES":
-                    hermes_constant += 220
-                bg = Image.open("assets/upgrade_card.tif").convert("RGBA")
-
-                # get the foreground image, first handling the pirate case
-                try:
-                    fg = Image.open(f"assets/upgrades/{upgrade}.png").convert("RGBA")
-
-                except Exception as _:
-                    # make a blank image of the foreground size if it doesn't exist
-                    print(
-                        colors.RED
-                        + "!Failed to find using default image! "
-                        + colors.ENDC,
-                        end=" ",
-                    )
-                    fg = Image.new(
-                        "RGBA",
-                        (image_size[0] // 2, image_size[1] // 2),
-                        (255, 255, 255, 0),
-                    )
-
-                # resize foreground, and filter out brighter colors
-
-                image_size = (int(400), int(600))
-                fg.thumbnail(image_size, Image.LANCZOS)
-                for x in range(fg.width):
-                    for y in range(fg.height):
-                        r, g, b, a = fg.getpixel((x, y))
-                        if r > 200 and g > 200 and b > 200:
-                            fg.putpixel((x, y), (255, 255, 255, 0))
-
-                # paste the fg onto the bg at 1/3 down from the top
-                fg_position = (
-                    (bg.width - fg.width) // 2,
-                    ((bg.height - fg.height) // 5) + (40 if hermes_constant else 0),
+                bg = Image.open("assets/waves.jpg").convert("RGBA")
+                table = Image.open("assets/wind.png").convert("RGBA")
+                table_pos = (
+                    (bg.width - table.width) // 2,
+                    ((bg.height - table.height) * 3) // 4,
                 )
-
-                bg.paste(fg, fg_position, fg)
+                bg.paste(table, table_pos, table)
 
                 draw = ImageDraw.Draw(bg)
-                title = line[0].upper()
-                title_width, title_height = textsize(title, glynnis_font)
+                title_width, title_height = textsize(season, glynnis_font_title)
                 title_position = (
-                    bg.width // 2,
-                    (bg.height // 2) - (title_height // 2) + 20 + hermes_constant,
+                    ((bg.width) // 2),
+                    bg.height // 10,
                 )
                 draw.text(
-                    ((bg.width - title_width) / 2, title_position[1] - 10),
-                    title,
+                    title_position,
+                    season.upper(),
+                    ImageColor.getcolor(get_season_color(season), "RGB"),
+                    anchor="mm",
+                    font=glynnis_font_title,
+                )
+                # next in the normal font size, draw the movement points just below the title
+                mp = f"MOVE: {mp}"
+                mp_width, mp_height = textsize(mp, glynnis_font)
+                mp_position = (
+                    (bg.width) // 2,
+                    title_position[1] + 80,
+                )
+                draw.text(
+                    mp_position,
+                    mp,
                     (0, 0, 0),
                     font=glynnis_font,
+                    anchor="mm",
                 )
 
-                body_para = textwrap.wrap(text, width=36)
-                current_h, pad = 45, 3
-                margins = 90
-                for line in body_para:
-                    # what we want to do now, is go word by word, and insert insert the padding between each, so that they are flush with the sides of the card
-                    line_w, h = textsize(line, glynnis_font)
+                # now draw the storm location
+                storm_location = f"Storm in {storm_location}!"
+                storm_width, storm_height = textsize(storm_location, glynnis_font)
+                storm_position = (
+                    bg.width // 2,
+                    mp_position[1] + mp_height + 20,
+                )
+
+                draw.text(
+                    storm_position,
+                    storm_location,
+                    (0, 0, 0),
+                    font=glynnis_font,
+                    anchor="mm",
+                )
+                # now draw the damage to the hull and the crew, if there is no crew damage, don't bother displaying it
+                storm_damage_hull = f"{storm_damage_hull} hull damage"
+                hull_width, hull_height = textsize(storm_damage_hull, glynnis_font)
+                hull_position = (
+                    (bg.width) // 2,
+                    storm_position[1] + storm_height + 20,
+                )
+                draw.text(
+                    (((bg.width) // 2), hull_position[1]),
+                    storm_damage_hull,
+                    (0, 0, 0),
+                    font=glynnis_font,
+                    anchor="mm",
+                )
+                for j in range(9):
+                    wind_val = test_wind_vals[j]
+                    if (wind_val != 0):
+                        draw.text(
+                            circle_chords[j],
+                            f"{wind_val}",
+                            (0, 0, 0),
+                            font=glynnis_font,
+                            anchor="mm",
+                        )
+
+                if storm_damage_crew != "":
+                    storm_damage_crew = f"{storm_damage_crew} crew damage"
+                    crew_width, crew_height = textsize(storm_damage_crew, glynnis_font)
+                    crew_position = (
+                        bg.width // 2,
+                        hull_position[1] + hull_height,
+                    )
                     draw.text(
-                        (
-                            margins,
-                            (bg.height // 2) + current_h + hermes_constant,
-                        ),
-                        line,
+                        crew_position,
+                        storm_damage_crew,
                         (0, 0, 0),
                         font=glynnis_font,
+                        anchor="mm",
                     )
-                    current_h += h + pad
+                # the pattern has margins of 175, and then to get to the center of the circles it's 50, because they are 100 in diameter
+                # there are nine circles, so we need to space them out evenly
+                # now we have to place the wind values, in the circles provided
 
-                # I want to try opening a gift circle, and imposing it onto the middle of the card
-
-                # convert to png
-                bg = bg.convert("RGB")
-                bg.save(f"upgrades_output/{upgrade}.png")
-
-                print(colors.GREEN + "Exported: " + colors.ENDC + f"{upgrade}.png")
+                i += 1
+                bg.save(f"voyage_output/{season}{i}.png")
+                print(colors.GREEN + "Exported: " + colors.ENDC + f"{season}{i}.png")
             # catch everything and print the error
             except Exception as e:
-                print(colors.RED + f"Export failed, {e}" + colors.ENDC + upgrade)
+                print("write error", e)
