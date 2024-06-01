@@ -1,8 +1,31 @@
 def compile_all():
     from PIL import Image, ImageDraw, ImageFont, ImageColor
     import os
-    import textwrap
+    import random
     import csv
+
+    # seasons = Winter, Spring, Summer, Autumn
+    def wind_table_generator(season):
+        if season == "Winter":
+            base = [8, 6, 6, 5, 0, 3, 6, 2, 2]
+        elif season == "Spring":
+            base = [9, 5, 6, 4, 0, 3, 3, 2, 4]
+        elif season == "Summer":
+            base = [16, 4, 2, 5, 0, 2, 5, 2, 2]
+        elif season == "Fall":
+            base = [11, 6, 6, 3, 0, 2, 3, 2, 3]
+
+        for n in base:
+            if n > 3:
+                if random.randint(1, 6) == 6:
+                    # fifty fify + or minus
+                    n += 1 if random.randint(1, 2) == 1 else -1
+                    if random.randint(1, 6) == 6:
+                        n += 1 if random.randint(1, 2) == 1 else -1
+                        if random.randint(1, 6) == 6:
+                            n += 1 if random.randint(1, 2) == 1 else -1
+
+        return base
 
     def textsize(text, font):
         im = Image.new(mode="P", size=(0, 0))
@@ -48,7 +71,6 @@ def compile_all():
         glynnis_font = ImageFont.truetype("assets/skia.ttf", 36)
         glynnis_font_title = ImageFont.truetype("assets/skia.ttf", 92)
         reader = csv.reader(file, skipinitialspace=True)
-        test_wind_vals = [16, 16, 16, 16, 0, 16, 16, 16, 16]
 
         # see if there is a dir to save too (voyage)
         if not os.path.exists("voyage_output"):
@@ -133,9 +155,10 @@ def compile_all():
                     font=glynnis_font,
                     anchor="mm",
                 )
+                wind_vals = wind_table_generator(season)
                 for j in range(9):
-                    wind_val = test_wind_vals[j]
-                    if (wind_val != 0):
+                    wind_val = wind_vals[j]
+                    if wind_val != 0:
                         draw.text(
                             circle_chords[j],
                             f"{wind_val}",
