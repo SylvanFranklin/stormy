@@ -12,18 +12,17 @@ def compile_all():
             base = [9, 5, 6, 4, 0, 3, 3, 2, 4]
         elif season == "Summer":
             base = [16, 4, 2, 5, 0, 2, 5, 2, 2]
-        elif season == "Fall":
+        elif season == "Autumn":
             base = [11, 6, 6, 3, 0, 2, 3, 2, 3]
 
-        for n in base:
-            if n > 3:
-                if random.randint(1, 6) == 6:
-                    # fifty fify + or minus
-                    n += 1 if random.randint(1, 2) == 1 else -1
-                    if random.randint(1, 6) == 6:
-                        n += 1 if random.randint(1, 2) == 1 else -1
-                        if random.randint(1, 6) == 6:
-                            n += 1 if random.randint(1, 2) == 1 else -1
+        for i in range(9):
+            if base[i] > 3:
+                if random.randint(1, 4) == 1:
+                    base[i] += 1 if random.randint(1, 2) == 1 else -1
+                    if random.randint(1, 4) == 1:
+                        base[i] += 1 if random.randint(1, 2) == 1 else -1
+                        if random.randint(1, 4) == 1:
+                            base[i] += 1 if random.randint(1, 2) == 1 else -1
 
         return base
 
@@ -40,7 +39,7 @@ def compile_all():
             return "#8DA074"
         elif season == "Summer":
             return "#DD922A"
-        elif season == "Fall":
+        elif season == "Autumn":
             return "#7B2F20"
 
     class colors:
@@ -184,6 +183,9 @@ def compile_all():
                 # the pattern has margins of 175, and then to get to the center of the circles it's 50, because they are 100 in diameter
                 # there are nine circles, so we need to space them out evenly
                 # now we have to place the wind values, in the circles provided
+
+                if i == 12:
+                    i = 0
 
                 i += 1
                 bg.save(f"voyage_output/{season}{i}.png")

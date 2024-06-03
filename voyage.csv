@@ -1,9 +1,9 @@
 Season,mp,storm location,hull damage,crew damage,swept to
 Winter,18,Issikon Pelagos,6d6,1d6,Syria
-Winter,19,Aigyption Pelagos,6d6,,Phoenicia
+Winter,19,Aigyption Pelagos,6d6,1d6,Phoenicia
 Winter,20,Pelagos Tyron,6d6,,Cyprus
 Winter,21,Issikon Pelagos,7d6,,Philistia
-Winter,21,Lykion Pelagos,7d6,,Egypt
+Winter,21,Lykion Pelagos,7d6,2d6,Egypt
 Winter,22,Libykon Pelagos,7d6,1d6,Phoenicia
 Winter,22,Aigyption Pelagos,7d6,2d6,Lukka
 Winter,23,Pelagos Tyron,7d6,2d6,Hatti
@@ -17,8 +17,8 @@ Spring,20,Lykion Pelagos,6d6,1d6,Phoenicia
 Spring,21,Libykon Pelagos,7d6,,Hatti
 Spring,21,Aigyption Pelagos,7d6,,Syria
 Spring,22,Pelagos Tyron,7d6,3d6,Phoenicia
-Spring,22,Issikon Pelagos,7d6,,Cyprus
-Spring,23,Lykion Pelagos,7d6,,Philistia
+Spring,22,Issikon Pelagos,8d6,3d6,Cyprus
+Spring,23,Lykion Pelagos,4d6,4d6,Philistia
 Spring,23,Libykon Pelagos,7d6,,Lukka
 Spring,24,Aigyption Pelagos,6d6,,Libya
 Spring,25,Pelagos Tyron,6d6,,Lukka
@@ -26,7 +26,7 @@ Spring,26,Issikon Pelagos,6d6,1d6,Philistia
 Summer,18,Lykion Pelagos,6d6,,Syria
 Summer,19,Libykon Pelagos,6d6,,Phoenicia
 Summer,20,Aigyption Pelagos,6d6,,Cyprus
-Summer,21,Pelagos Tyron,7d6,,Philistia
+Summer,21,Pelagos Tyron, 5d6,2d6,Philistia
 Summer,21,Issikon Pelagos,7d6,,Egypt
 Summer,22,Lykion Pelagos,7d6,,Egypt
 Summer,22,Libykon Pelagos,7d6,,Lukka
@@ -36,12 +36,12 @@ Summer,24,Issikon Pelagos,6d6,,Phoenicia
 Summer,25,Lykion Pelagos,6d6,,Cyprus
 Summer,26,Libykon Pelagos,6d6,,Philistia
 Autumn,18,Aigyption Pelagos,6d6,,Libya
-Autumn,19,Pelagos Tyron,6d6,,Libya
+Autumn,19,Pelagos Tyron,6d6,1d6,Libya
 Autumn,20,Issikon Pelagos,6d6,,Libya
-Autumn,21,Lykion Pelagos,7d6,,Hatti
+Autumn,21,Lykion Pelagos,5d6,3d6,Hatti
 Autumn,21,Libykon Pelagos,7d6,,Syria
-Autumn,22,Aigyption Pelagos,7d6,,Phoenicia
-Autumn,22,Pelagos Tyron,7d6,,Cyprus
+Autumn,22,Aigyption Pelagos,7d6,1d6,Phoenicia
+Autumn,22,Pelagos Tyron,6d6,2d6,Cyprus
 Autumn,23,Issikon Pelagos,7d6,,Philistia
 Autumn,23,Lykion Pelagos,7d6,,Egypt
 Autumn,24,Libykon Pelagos,6d6,,Lukka
