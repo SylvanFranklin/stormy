@@ -8,7 +8,6 @@ import themes
 if not os.path.exists("pages"):
     os.mkdir("pages")
 
-
 with open("upgrades.csv") as file:
     # ensure that we have all the themes for print
     themes.compile_all(True)

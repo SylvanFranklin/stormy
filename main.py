@@ -1,5 +1,6 @@
-import voyage
-voyage.compile_all()
+import themes
+
+# voyage.compile_all()
 # gifts.compile_all()
-# themes.compile_all(True)
+themes.compile_all(True)
 # upgrades.compile_all()

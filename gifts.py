@@ -8,7 +8,7 @@ def compile_all():
         YELLOW = "\033[33m"
         BLUE = "\033[34m"
 
-    image_size = (400, 400)
+    image_size = (500, 500)
     glynnis_font = ImageFont.truetype("assets/gfreg.ttf", 56)
     with open("gifts.csv") as file:
         print(colors.YELLOW + "Reading file" + colors.ENDC + "...")
