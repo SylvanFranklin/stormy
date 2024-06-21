@@ -1,4 +1,5 @@
 def compile_all(for_print):
+    import utils
     from PIL import Image, ImageDraw, ImageFont
     import os
     import textwrap
@@ -43,7 +44,7 @@ def compile_all(for_print):
         for line in reader:
             hermes_constant = 0
             try:
-                theme = line[0].upper().replace(" ", "")
+                theme = utils.clean_raw_name(line[0])
                 text = line[1]
 
                 if theme == "HERMES":

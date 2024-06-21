@@ -1,5 +1,6 @@
 def compile_all():
     from PIL import Image, ImageDraw, ImageFont
+    import utils
 
     class colors:
         RED = "\033[31m"
@@ -15,7 +16,7 @@ def compile_all():
         for i, line in enumerate(file.readlines()[1:]):
             try:
                 current = line.strip().split(",")
-                name = current[0].upper().replace(" ", "")
+                name = utils.clean_raw_name(current[0].upper().replace(" ", ""))
                 weight_class = current[1].lower()
                 fame = current[2]
                 special_text = current[4]
