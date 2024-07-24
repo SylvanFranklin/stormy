@@ -1,22 +1,15 @@
 def compile_all():
     from PIL import Image, ImageDraw, ImageFont
-    import utils
-
-    class colors:
-        RED = "\033[31m"
-        ENDC = "\033[m"
-        GREEN = "\033[32m"
-        YELLOW = "\033[33m"
-        BLUE = "\033[34m"
+    from utils import colors, clean_raw_name
 
     image_size = (500, 500)
-    glynnis_font = ImageFont.truetype("assets/gfreg.ttf", 56)
+    gift_font = ImageFont.truetype("assets/regular.ttf", 60)
     with open("gifts.csv") as file:
         print(colors.YELLOW + "Reading file" + colors.ENDC + "...")
         for i, line in enumerate(file.readlines()[1:]):
             try:
                 current = line.strip().split(",")
-                name = utils.clean_raw_name(current[0].upper().replace(" ", ""))
+                name = clean_raw_name(current[0].upper().replace(" ", ""))
                 weight_class = current[1].lower()
                 fame = current[2]
                 special_text = current[4]
@@ -134,7 +127,7 @@ def compile_all():
                     ((bg.width // 2) - 10 * len(fame), (bg.height) - 140),
                     fame,
                     (0, 0, 0),
-                    font=glynnis_font,
+                    font=gift_font,
                 )
                 if len(special_text) > 0:
                     if current[5].lower() == "r":
@@ -146,7 +139,7 @@ def compile_all():
                             ),
                             special_text,
                             (245, 98, 81),
-                            font=glynnis_font,
+                            font=gift_font,
                         )
                     elif current[5].lower() == "l":
                         draw.text(
@@ -156,7 +149,7 @@ def compile_all():
                             ),
                             special_text,
                             (245, 98, 81),
-                            font=glynnis_font,
+                            font=gift_font,
                         )
                     else:
                         split = int(current[5][1])
@@ -170,7 +163,7 @@ def compile_all():
                             ),
                             left,
                             (245, 98, 81),
-                            font=glynnis_font,
+                            font=gift_font,
                         )
 
                         draw.text(
@@ -180,7 +173,7 @@ def compile_all():
                             ),
                             right,
                             (245, 98, 81),
-                            font=glynnis_font,
+                            font=gift_font,
                         )
 
                 final.save(f"gifts_output/{name}.png", dpi=(300, 300))

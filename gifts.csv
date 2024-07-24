@@ -1,62 +1,68 @@
-NAME,SIZE,FAME,QUANTITY,SPECIAL,SPECIAL TEXT LOCATION,"WEAPON, ARMOR, RANGED, NONE",SPECIAL RULE
-AMPHORA ONE,H,9,4,,,n,
-AMPHORA THREE,H,8,4,,,n,
-AMPHORA TWO,H,9,4,,,n,
-AXE,M,7,2,+1d6,R,w,
-BABOONS,M,18,2,,,n,
-BEES,L,4,1,,,n,
-BRACELET,L,4,2,,,n,
-CARNELIAN BEADS,L,6,2,,,n,
-CAT,M,-,1,,E,n,worth 20 fame at the end of the game but has a 50 percent chance of leaving your ship when you make contact with a port or another ship
-CEDAR,H,2,3,HEAL 2SHIP,B4,n,
-CLOTH,M,6,5,HEAL 1SHIP,B4,n,
-COMMON BOW,L,3,3,+2d6,R,r,
-COMMON SPEAR,L,2,2,+1d6,L,wr,
-COMMON SWORD,L,3,3,+1d6,R,w,
-COMMON THORAX,L,2,3,+1HP,L,a,
-COPPER INGOT,H,4,4,E,B4,n,
-IVORY DUCK,L,4,2,,,n,
-EARRINGS,L,2,2,,,n,
-EBONY,H,8,2,,,n,
-FAIENCE DISH WITH MUSIC GIRL,H,6,3,,,n,
-FRUITS,L,3,2,HEAL 1HP,B4,n,
-GLASS INGOTS,H,9,4,,,n,
-GOATS,H,1,6,+5d6\noracle,R,n,
-GOLD,M,14,2,,,n,
-JEWELRY,L,8,2,,,n,
-GOLD CHALLICE,L,4,3,,,n,
-STATUE,L,12,1,,,n,
-GOLD RHYTON,M,8,1,,,n,
-HELMET,M,10,1,+1DEF,L,a,
-IRON KNIFE WITH BRONZE RIVETS,L,,2,,,w,
-IVORY,M,12,3,,,n,
-TRUMPET,L,7,1,+1d6 diplomacy,,n,
-LAPIS LAZULI CYLINDER SEAL,L,7,1,,,n,
-LEKYTHION,M,8,2,,,n,
-MUSIC GIRLS,H,7,2,,,n,
-NEPENTHE,L,3,2,HEAL3HPs,B4,n,
-OARS,H,2,2,HEAL 1SHIP,B4,n,
-OSTRICH EGG,M,,1,,,n,
-TABLET,L,6,2,,E,n,Exchange during your next hospitality for three treasure tokens
-ROPE,M,1,3,HEAL 1SHIP,B4,n,
-SCARAB OF NEFERTITI,L,5,1,,,n,
-SHIELD AND SPEAR,M,18,2,+1HP+1d6,B4,wa,
-SILVER-HILTED SWORD,L,,2,,,w,
-SPICES,L,7,3,,,n,
-STAND,M,6,2,,,n,
-STONE SCEPTER,M,5,2,,,n,
-STOWAWAY,L,-5,1,,E,n,
-SWORDS,M,10,2,+2d6,R,w,
-SYMPOSIUM BOWL,L,5,2,,,n,
-THORAX,M,10,2,+2HP,L,a,
-TIN INGOT,M,3,6,,E,n,Combines somehow with copper at end for higher value
-TORTOISE SHELL,M,8,2,,,n,
-TRIPOD ONE,M,6,2,,,n,
-TRIPOD TWO,M,10,1,,,n,
-VACES WITH ICONS,H,5,6,,,n,
-VESSEL BLUE,H,11,3,,,n,
-VESSEL BLUE TWO,M,10,2,,,n,
-VESSEL RED,H,6,4,,,n,
-VESSEL SILVER,M,8,1,,,n,
-VESSEL TALL,H,4,3,,,n,
-RESIN,M,3,3,HEAL 1SHIP,B4,n,
+NAME,SIZE,FAME ORIG,FAME SYLV,QUANTITY,SPECIAL,SPECIAL TEXT LOCATION,"WEAPON, ARMOR, RANGED, NONE",SPECIAL RULE,,SIZE H,SIZE M,SIZE L,QUANTITY,FAME * QUANTITY
+AMPHORA ONE,H,1,9,4,,,n,,,4,,,,4
+AMPHORA THREE,H,3,8,4,,,n,,,4,,,,12
+AMPHORA TWO,H,2,9,4,,,n,,,4,,,,8
+CEDAR,H,6,2,3,_+2 HULL,B4,n,Play during Recovery / Refit only at a Palace ,,3,,,,18
+COPPER INGOT,H,6,4,4,_+2d6 DIPL,B4,n,Cannot be used for Diplomacy on Cyprus,,4,,,,24
+EBONY,H,5,8,2,,,n,,,2,,,,10
+FAIENCE DISH WITH MUSIC GIRL,H,3,6,3,,,n,,,3,,,,9
+GLASS INGOTS,H,4,9,4,,,n,,,4,,,,16
+GOAT,H,0,0,6,_+3d6\nORACLE,R,n,"Can be played in addition to other Gift in oracle attempt, and adds +3.",,6,,,,6
+MUSIC GIRLS,H,10,7,2,,,n,,,2,,,,20
+OARS,H,2,2,2,_+1 HULL,B4,n,Play during Recovery / Refit only at a Palace ,,2,,,,4
+VASES WITH ICONS,H,5,5,6,,,n,,,4,,,,30
+VESSEL BLUE,H,4,11,3,,,n,,,3,,,,12
+VESSEL RED,H,1,6,4,,,n,,,3,,,,4
+VESSEL TALL,H,2,4,3,,,n,,,3,,,,6
+BEES,L,8,4,1,,,n,,,,,1,,8
+BRACELET,L,8,4,2,,,n,,,,,2,,16
+CARNELIAN BEADS,L,6,6,2,,,n,,,,,2,,12
+COMMON BOW,L,3,3,3,_2d6 OSA,R,r,One preliminary 2d6 attack during Trial Combat or Ship Melee (including Pirates).,,,,3,,9
+COMMON SPEAR,L,2,2,2,_1d6 OSA,L,wr,"If equipped as Ranged weapon, one preliminary 1d6 attack during Trial Combat or Ship Melee (including Pirates).",,,,2,,4
+COMMON SWORD,L,3,3,3,_+1d6 ATK,R,w,,,{,,3,,9
+COMMON THORAX,L,2,2,3,_+1d6 DEF,L,a,,,,,3,,6
+IVORY DUCK,L,4,4,2,,,n,,,,,2,,8
+EARRINGS,L,5,2,2,,,n,,,,,2,,10
+FRUITS,L,3,3,2,_+1 CREW,B4,n,Play during Recovery / Refit only at a Palace ,,,,2,,6
+JEWELRY,L,7,8,2,,,n,,,,,2,,14
+GOLD CHALICE,L,7,4,3,,,n,,,,,3,,21
+STATUE,L,12,12,1,,,n,,,,,1,,12
+IRON KNIFE WITH BRONZE RIVETS,L,3,,2,,,w,,,,,2,,6
+TRUMPET,L,7,7,1,_+1d6 DIPL,,n,This Gift is not spent during Diplomacy but still gives advantage.,,,,1,,7
+LAPIS LAZULI CYLINDER SEAL,L,7,7,1,,,n,,,,,1,,7
+NEPENTHE,L,8,3,2,_HEAL 2,B4,n,Play during Recovery / Refit only at a Palace ,,,,2,,16
+TABLET,L,4,6,2,,E,n,"During any Hospitality encounter involving Gifts, draw +3 Gifts and return Tablet to Gift Pool.",,,,2,,8
+SCARAB OF NEFERTITI,L,5,5,1,,,n,,,,,1,,5
+SILVER-HILTED SWORD,L,6,6,2,_+1d6 ATK,,w,,,,,2,,12
+SPICES,L,7,7,3,,,n,,,,,3,,21
+RATS,M,0,0,1,,E,n,"When Rats is drawn, it occupies one Medium Cargo space and cannot be spent. Can only be removed by possessing Cat for at least one turn.",,,,1,,-5
+SYMPOSIUM BOWL,L,5,5,2,,,n,,,,,2,,10
+AXE,M,5,7,2,_+1d6 ATK,R,w,,,,2,,,10
+BABOONS,M,9,18,2,,,n,,,,2,,,18
+CAT,M,0,0,1,,E,n,"At each Palace, cat returns to Gift Pool on 1–3. Worth 20 Fame at the end of game.",,,1,,,0
+CLOTH,M,3,6,5,_+1 SHIP,B4,n,Play during Recovery / Refit only at a Palace ,,,6,,,15
+GOLD,M,14,14,2,,,n,,,,3,,,28
+GOLD RHYTON,M,8,8,1,,,n,,,,1,,,8
+HELMET,M,10,10,1,_1d6 DEF,L,a,,,,2,,,10
+IVORY RAW,M,6,12,3,,,n,,,,3,,,18
+LEKYTHION,M,5,8,2,,,n,,,,4,,,10
+OSTRICH EGG,M,3,3,1,,,n,,,,3,,,3
+ROPE,M,1,1,3,_+1HULL,B4,n,Play during Recovery / Refit only at a Palace ,,,3,,,3
+SHIELD AND SPEAR,M,15,18,2,_+1d6 ATK +1d6 DEF,B4,wa,,,,2,,,30
+STAND,M,6,6,2,,,n,,,,4,,,12
+STONE SCEPTER,M,5,5,2,,,n,,,,2,,,10
+SWORDS,M,10,10,2,_+2d6 ATK,R,w,,,,2,,,20
+THORAX,M,8,10,2,_+2d6 DEF,L,a,,,,2,,,16
+TIN INGOT,M,3,3,6,,E,n,,,,8,,,18
+TORTOISE SHELL,M,3,3,2,,,n,,,,2,,,6
+TRIPOD ONE,M,5,6,2,,,n,,,,6,,,10
+TRIPOD TWO,M,8,10,1,,,n,,,,4,,,8
+VESSEL BLUE TWO,M,5,10,2,,,n,,,,4,,,10
+VESSEL SILVER,M,6,8,1,,,n,,,,3,,,6
+RESIN,M,5,3,3,,B4,n,Can be played in addition to other Gift for Oracle Attempt.,,,4,,,15
+,,,,,,,,,,,,,,
+,,,,total,,,,,TOTALS,51,73,45,grand total,
+,,315,,149,,,,,,,,,169,689
+,,,,,,,,1.4 desired proportion of M:H,,,,,1.431372549,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,AVG VAL PER GIFT,4.624161074
