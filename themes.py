@@ -5,7 +5,6 @@ class colors:
     YELLOW = "\033[33m"
     BLUE = "\033[34m"
 
-
 def compile_all(for_print):
     import csv
     import os
@@ -159,7 +158,7 @@ def compile_all(for_print):
                 current_h = 0
                 margins = 85
                 title_position = (
-                    center_text(title, margins, bg.width, title_font),
+                    center_text(title, bg.width, title_font),
                     bg.height // 2 - title_height - 40,
                 )
                 draw.text(

@@ -68,7 +68,7 @@ def compile_all():
                 title = line[0]
                 title_width, title_height = textsize(title, body_font)
                 title_position = (
-                    center_text(title, margins, bg.width, title_font),
+                    center_text(title, bg.width, title_font),
                     (bg.height // 5) - (title_height // 2),
                 )
                 draw.text(

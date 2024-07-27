@@ -8,11 +8,8 @@ class colors:
     BLUE = "\033[34m"
 
 
-def center_text(text, margins, width, font):
+def center_text(text, width, font):
     text_width, _ = textsize(text, font)
-    print(text_width)
-    print(width)
-
     # the center is right in the middle so width // 2, then subratct half the text width
     return (width // 2) - (text_width // 2)
 
