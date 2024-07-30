@@ -48,5 +48,5 @@ def wrap(text, margins, width, font):
 
 body_font = ImageFont.truetype("assets/regular.ttf", 27)
 title_font = ImageFont.truetype("assets/regular.ttf", 34)
-flavor_font = ImageFont.truetype("assets/italic.ttf", 24)
-flavor_font_citation = ImageFont.truetype("assets/regular.ttf", 24)
+italic_flavor_font = ImageFont.truetype("assets/italic.ttf", 24)
+normal_flavor_font = ImageFont.truetype("assets/regular.ttf", 24)

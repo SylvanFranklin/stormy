@@ -5,6 +5,25 @@ class colors:
     YELLOW = "\033[33m"
     BLUE = "\033[34m"
 
+
+def custom_split(string):
+    arr = []
+    current = ""
+    # we want to split the string by spaces, and by (, ), and by _, and keep the symbols in the array
+    for char in string:
+        if char == " ":
+            arr.append(current)
+            current = ""
+        elif char == "(" or char == ")" or char == "_":
+            arr.append(current)
+            arr.append(char)
+            current = ""
+        else:
+            current += char
+
+    return arr
+
+
 def compile_all(for_print):
     import csv
     import os
@@ -15,8 +34,8 @@ def compile_all(for_print):
         textsize,
         wrap,
         body_font,
-        flavor_font,
-        flavor_font_citation,
+        normal_flavor_font,
+        italic_flavor_font,
         title_font,
         center_text,
     )
@@ -25,8 +44,15 @@ def compile_all(for_print):
         print(colors.BLUE + "Reading themes file" + colors.ENDC + "...")
         reader = csv.reader(file, skipinitialspace=True)
         image_size = (390, 600 - 15)
-        cost_font = ImageFont.truetype("assets/regular.ttf", 70)
-        cost_circle = Image.open("assets/cost.png").convert("RGBA")
+
+        try:
+            print("Preliminary image loading...")
+            cost_font = ImageFont.truetype("assets/regular.ttf", 70)
+            oracle_cost_circle = Image.open("assets/oracle_cost.png").convert("RGBA")
+            cost_circle = Image.open("assets/cost.png").convert("RGBA")
+        except FileNotFoundError:
+            print(colors.RED + "ERROR: Font or image not found." + colors.ENDC)
+            return
 
         available_theme_art = os.listdir("assets/themes")
         available_theme_art.remove(".DS_Store")
@@ -34,14 +60,19 @@ def compile_all(for_print):
         # skip the first line
         next(reader)
         for line in reader:
+            if all([len(x) == 0 for x in line]):
+                print("END OF FILE")
+                break
+
             try:
+                bg = Image.open("assets/theme_card.png").convert("RGBA")
                 title = clean_raw_name(line[0])
-                text, cost, flavor = (
+                text, cost, oracle_cost, flavor = (
                     line[1].join(["\n", "\n"]),
-                    line[3],
+                    line[3] if line[3] else "0",
+                    line[4] if line[4] else 0,
                     line[5].join(["\n", "\n"]),
                 )
-                bg = Image.open("assets/theme_card.png").convert("RGBA")
 
                 # for weird art cases
                 try:
@@ -186,30 +217,45 @@ def compile_all(for_print):
                     current_h += h + pad
 
                 # flavor text
-                flavor = wrap(flavor, margins, bg.width, font=flavor_font)
+
+                flavor = wrap(flavor, margins, bg.width, font=italic_flavor_font)
+
+                in_parens = False
                 current_h -= 70
                 # margins = 80
+                font = italic_flavor_font
+                open_citation = False
                 for line in flavor:
                     # what we want to do now, is go word by word, and insert insert the padding between each, so that they are flush with the sides of the card
                     line_w, h = textsize(line, body_font)
                     current_w = 0
-                    for word in line.split():
-                        font = flavor_font
-                        if word[0] == "_" and word[-1] == "_":
-                            font = flavor_font_citation
-                            word = word[1:-1]
+                    for word in custom_split(line):
+                        if word == "(":
+                            in_parens = True
 
-                        draw.text(
-                            (
-                                margins + current_w,
-                                (bg.height // 2) + current_h + 100,
-                            ),
-                            f"{word} ",
-                            (40, 40, 40),
-                            font=font,
-                        )
-                        current_w += textsize(f"{word} ", font)[0]
+                        if in_parens:
+                            if word == "_":
+                                open_citation = not open_citation
 
+                            if open_citation:
+                                font = italic_flavor_font
+                            else:
+                                font = normal_flavor_font
+
+                        if word != "_":
+                            draw.text(
+                                (
+                                    margins + current_w,
+                                    (bg.height // 2) + current_h + 100,
+                                ),
+                                f"{word} ",
+                                (40, 40, 40),
+                                font=font,
+                            )
+
+                            current_w += textsize(f"{word} ", font)[0]
+
+                    # only set the width when we arent' about to be done
                     current_w = 0
                     current_h += h + pad
 
@@ -233,8 +279,15 @@ def compile_all(for_print):
                         cost_circle,
                     )
 
-                    # the text should always be in the center of the circle
+                    if oracle_cost != 0:
+                        oracle_cost_chords = (bg.width - 98 - insert - 80, insert + 10)
+                        bg.paste(
+                            oracle_cost_circle,
+                            oracle_cost_chords,
+                            oracle_cost_circle,
+                        )
 
+                    # the text should always be in the center of the circle
                     cost_size = textsize(cost, cost_font)
                     draw.text(
                         (
