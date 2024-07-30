@@ -1,9 +1,20 @@
 def compile_all():
     from PIL import Image, ImageDraw, ImageFont
-    from utils import colors, clean_raw_name, center_text
+    from utils import colors, clean_raw_name, center_text, textsize
     import csv
 
     image_size = (500, 500)
+    # special text offsets, dict with names and values for x and y
+    special_text_offset = {
+        "GOAT": (0, -120),
+        "CEDAR": (-50, -150),
+        "AXE": (0, 50),
+        "FRUITS": (150, -200),
+        "ROPE": (150, 0),
+        "NEPENTHE": (150, -200),
+        "THORAX": (-30, 0),
+    }
+
     try:
         print("Preliminary image loading...")
         gift_font = ImageFont.truetype("assets/regular.ttf", 64)
@@ -21,6 +32,11 @@ def compile_all():
         reader = csv.reader(file)
         next(reader)
         for line in reader:
+            # check if the line only contains commas, which means it's a the end
+            if all([len(x) == 0 for x in line]):
+                print("END OF FILE")
+                break
+
             try:
                 name = clean_raw_name(line[0].upper().replace(" ", ""))
                 weight_class = line[1].lower()  # H, M, L
@@ -149,53 +165,45 @@ def compile_all():
                 )
 
                 if len(special_text) > 0:
-                    if text_location.lower() == "r":
-                        special_text = special_text.replace("\\n", "\n")
-                        draw.text(
-                            (
-                                (tile.width // 2) + 130,
-                                (tile.height // 2),
-                            ),
-                            special_text,
-                            (245, 98, 81),
-                            font=gift_font,
-                        )
-                    elif text_location.lower() == "l":
-                        draw.text(
-                            (
-                                (tile.width // 2) - 250,
-                                (tile.height) // 2,
-                            ),
-                            special_text,
-                            (245, 98, 81),
-                            font=gift_font,
-                        )
+                    # all text before the "|" character is jeft justified, and the rest is right
+
+                    left = special_text.split("|")[0]
+                    if len(special_text.split("|")) == 1:
+                        right = ""
                     else:
-                        split = int(text_location[1])
-                        left = special_text[0:split]
-                        right = special_text[split:]
+                        right = special_text.split("|")[1]
 
-                        draw.text(
-                            (
-                                (tile.width // 2) - 250,
-                                (tile.height) // 2,
-                            ),
-                            left,
-                            (245, 98, 81),
-                            font=gift_font,
-                        )
+                    left = left.replace("\\n", "\n")
+                    right = right.replace("\\n", "\n")
 
-                        draw.text(
-                            (
-                                (tile.width // 2) + 130,
-                                (tile.height) // 2,
-                            ),
-                            right,
-                            (245, 98, 81),
-                            font=gift_font,
-                        )
+                    offset_pair = special_text_offset.get(name.upper(), (0, 0))
+
+                    draw.text(
+                        (
+                            (tile.width // 2) + 130 + offset_pair[0],
+                            (tile.height // 2)
+                            - (textsize(right, gift_font)[1] // 2)
+                            + offset_pair[1],
+                        ),
+                        right,
+                        (245, 98, 81),
+                        font=gift_font,
+                    )
+
+                    draw.text(
+                        (
+                            (tile.width // 2) - 250 + offset_pair[0],
+                            (tile.height) // 2
+                            - (textsize(left, gift_font)[1] // 2)
+                            + offset_pair[1],
+                        ),
+                        left,
+                        (245, 98, 81),
+                        font=gift_font,
+                    )
 
                 final.save(f"gifts_output/{name}.png", dpi=(300, 300))
                 print(colors.GREEN + "EXPORTED " + colors.ENDC + name + ".png")
             except Exception as e:
+                print(e.with_traceback())
                 print(colors.RED + "ERROR: " + colors.ENDC + str(e))

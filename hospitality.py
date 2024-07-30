@@ -69,7 +69,7 @@ def compile_all():
                 title_width, title_height = textsize(title, body_font)
                 title_position = (
                     center_text(title, bg.width, title_font),
-                    (bg.height // 5) - (title_height // 2),
+                    (bg.height // 7) - (title_height // 2),
                 )
                 draw.text(
                     title_position,
@@ -77,7 +77,7 @@ def compile_all():
                     (180, 64, 65),
                     font=title_font,
                 )
-                current_h = title_position[1] + title_height + 10
+                current_h = title_position[1] + title_height + 40
 
                 body_para = wrap(text, margins, bg.width, body_font)
                 body_position = (margins, title_position[1] + title_height - 10)
