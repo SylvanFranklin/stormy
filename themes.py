@@ -30,9 +30,8 @@ def compile_all(for_print):
         italic_flavor_font,
         title_font,
         center_text,
-        colors
+        colors,
     )
-
 
     with open("themes.csv") as file:
         print(colors.BLUE + "Reading themes file" + colors.ENDC + "...")
