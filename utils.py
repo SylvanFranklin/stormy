@@ -1,6 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
 
-
 def download_csv_file(name: str):
     import requests
     import sys

@@ -1,5 +1,5 @@
 def compile_all():
-    from PIL import Image, ImageDraw 
+    from PIL import Image, ImageDraw
     from utils import (
         clean_raw_name,
         textsize,
