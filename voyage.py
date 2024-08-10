@@ -89,27 +89,19 @@ def compile_all():
                 storm_damage_ship = line[4]
                 storm_damage_crew = line[5]
                 threshold = line[6]
-                swept_to = line[7]
+                swept_to_location = line[7]
+                current_h = bg.width // 2
 
                 table_pos = (
                     (bg.width - table.width) // 2,
                     (((bg.height - table.height) * 3) // 4) + 20,
                 )
 
-                div_line_pos = (
-                    (bg.width - div_line.width) // 2,
-                    (table_pos[1] - div_line.height - 54),
-                )
-
-                bg.paste(div_line, div_line_pos, div_line)
                 bg.paste(table, table_pos, table)
 
                 draw = ImageDraw.Draw(bg)
                 title_width, title_height = textsize(season, title_font)
-                title_position = (
-                    ((bg.width) // 2),
-                    bg.height // 10,
-                )
+                title_position = (((bg.width) // 2), current_h)
                 draw.text(
                     title_position,
                     season.upper(),
@@ -118,12 +110,10 @@ def compile_all():
                     font=title_font,
                 )
                 # next in the normal font size, draw the movement points just below the title
+                current_h += title_height + 20
                 mp = f"Movement Points: {mp}"
                 mp_width, mp_height = textsize(mp, body_font)
-                mp_position = (
-                    (bg.width) // 2,
-                    title_position[1] + 80,
-                )
+                mp_position = ((bg.width) // 2, current_h)
                 draw.text(
                     mp_position,
                     mp,
@@ -133,13 +123,10 @@ def compile_all():
                 )
 
                 # now draw the storm location
+                current_h += mp_height + 20
                 storm_location = f"Storm in {storm_location}!"
                 storm_width, storm_height = textsize(storm_location, body_font)
-                storm_position = (
-                    bg.width // 2,
-                    mp_position[1] + mp_height + 20,
-                )
-
+                storm_position = (bg.width // 2, current_h)
                 draw.text(
                     storm_position,
                     storm_location,
@@ -148,17 +135,12 @@ def compile_all():
                     anchor="mm",
                 )
 
-                # now draw the swept_to location
-                # now draw the damage to the ship and the crew, if there is no crew damage, don't bother displaying it
+                current_h += storm_height + 20
                 damage = (
                     f"{storm_damage_ship} ship damage | {storm_damage_crew} crew damage"
                 )
-                ship_width, ship_height = textsize(storm_damage_ship, body_font)
-                damage_position = (
-                    (bg.width) // 2,
-                    storm_position[1] + storm_height + 20,
-                )
-
+                damage_width, damage_height = textsize(damage, body_font)
+                damage_position = ((bg.width) // 2, current_h)
                 draw.text(
                     damage_position,
                     damage,
@@ -167,10 +149,18 @@ def compile_all():
                     anchor="mm",
                 )
 
-                swept = f"Threshold: {threshold} | Swept to: {swept_to}"
+                current_h += damage_height + 20
+                div_line_pos = (
+                    (bg.width - div_line.width) // 2,
+                    current_h,
+                )
+                bg.paste(div_line, div_line_pos, div_line)
+
+                current_h += 20 + div_line.height
+                swept = f"Threshold: {threshold} | Swept to: {swept_to_location}"
                 swept_pos = (
                     (bg.width) // 2,
-                    div_line_pos[1] + 10,
+                    current_h,
                 )
                 draw.text(
                     swept_pos,
