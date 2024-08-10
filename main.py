@@ -1,17 +1,20 @@
-import gifts
-import voyage
-import utils
-import themes
-import hospitality
+from multiprocessing import Pool
 
-print("Downloading files...")
-utils.download_csv_file("voyage")
-utils.download_csv_file("hospitality")
-utils.download_csv_file("gifts")
-utils.download_csv_file("themes")
+if __name__ == "__main__":
+    import gifts
+    import voyage
+    import utils
+    import themes
+    import hospitality
 
-print("Compiling files...")
-gifts.compile_all()
-themes.compile_all()
-hospitality.compile_all()
-voyage.compile_all()
+    print("Downloading files...")
+    with Pool() as p:
+        p.imap_unordered(
+            utils.download_csv_file, ["voyage", "hospitality", "gifts", "themes"]
+        )
+
+    print("Compiling files...")
+    gifts.compile_all()
+    themes.compile_all()
+    hospitality.compile_all()
+    voyage.compile_all()
