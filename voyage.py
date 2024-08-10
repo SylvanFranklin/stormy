@@ -4,7 +4,8 @@ def compile_all():
     import math
     import random
     import csv
-    from utils import body_font, title_font, colors 
+    from utils import body_font, title_font, colors, end
+    save_path = "output/voyage"
 
     def wind_table_generator(season):
         if season == "Winter":
@@ -79,6 +80,9 @@ def compile_all():
         next(reader)
         i = 0
         for line in reader:
+            if end(line):
+                print("END OF FILE")
+                break
             try:
                 # ---------------------
                 season = line[0]
@@ -157,7 +161,7 @@ def compile_all():
                     i = 0
                 i += 1
 
-                bg.save(f"voyage_output/{season}{i}.png")
+                bg.save(f"{save_path}/{season}{i}.png")
                 bg = Image.open("assets/waves.jpg").convert("RGBA")
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{season}{i}.png")
 

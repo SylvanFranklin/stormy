@@ -1,19 +1,21 @@
 def compile_all():
     from PIL import Image, ImageDraw
     from utils import (
+        end,
         clean_raw_name,
         textsize,
         wrap,
         body_font,
-        flavor_font,
-        flavor_font_citation,
+        normal_flavor_font,
+        italic_flavor_font,
         title_font,
         center_text,
     )
     import os
     import csv
 
-    save_path = "hospitality_output"
+    save_path = "output/hospitality"
+
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
@@ -26,18 +28,26 @@ def compile_all():
         YELLOW = "\033[33m"
         BLUE = "\033[34m"
 
-    # get all the images names from assets/upgrades
-    with open("raw_spreadsheet_data/hosp.csv") as file:
+    # get all the images names from assets/encounters
+    with open("raw_spreadsheet_data/hospitality.csv") as file:
         print(colors.YELLOW + "Reading hospitality file" + colors.ENDC + "...")
         reader = csv.reader(file, skipinitialspace=True)
 
+        # skip the header
+        next(reader)
         for line in reader:
             try:
-                upgrade = line[0].upper().replace(" ", "")
-                text = line[1]
+                if end(line):
+                    print("END OF FILE")
+                    break
+
+                encounter = line[0].upper().replace(" ", "")
+                text = line[2]
+                # expert
+                _ = line[3]
                 flavor = line[4]
 
-                bg = Image.open("assets/upgrade_card.tif").convert("RGBA")
+                bg = Image.open("assets/hospitality.tif").convert("RGBA")
 
                 # get the foreground image, first handling the pirate case
                 fg = Image.new(
@@ -95,15 +105,15 @@ def compile_all():
 
                 # flavor text
                 current_h += 10
-                flavor = wrap(flavor, margins, bg.width, font=flavor_font)
+                flavor = wrap(flavor, margins, bg.width, font=normal_flavor_font)
                 for line in flavor:
                     # what we want to do now, is go word by word, and insert insert the padding between each, so that they are flush with the sides of the card
                     line_w, h = textsize(line, body_font)
                     current_w = 0
                     for word in line.split():
-                        font = flavor_font
+                        font = normal_flavor_font
                         if word[0] == "_" and word[-1] == "_":
-                            font = flavor_font_citation
+                            font = italic_flavor_font
                             word = word[1:-1]
 
                         draw.text(
@@ -123,7 +133,7 @@ def compile_all():
                 bg = bg.convert("RGB")
                 bg.save(f"{save_path}/{clean_raw_name(title)}.png")
 
-                print(colors.GREEN + "Exported: " + colors.ENDC + f"{upgrade}.png")
+                print(colors.GREEN + "Exported: " + colors.ENDC + f"{encounter}.png")
             # catch everything and print the error
             except Exception as e:
-                print(colors.RED + f"Export failed, {e}" + colors.ENDC + upgrade)
+                print(colors.RED + f"Export failed, {e}" + colors.ENDC + encounter)

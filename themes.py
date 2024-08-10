@@ -1,4 +1,6 @@
 def compile_all():
+    save_path = "output/themes"
+
     def custom_split(string):
         arr = []
         current = ""
@@ -19,17 +21,20 @@ def compile_all():
     import csv
     import os
     import random
+
     from PIL import Image, ImageDraw, ImageFont
+
     from utils import (
-        clean_raw_name,
-        textsize,
-        wrap,
         body_font,
-        normal_flavor_font,
-        italic_flavor_font,
-        title_font,
         center_text,
+        clean_raw_name,
         colors,
+        end,
+        italic_flavor_font,
+        normal_flavor_font,
+        textsize,
+        title_font,
+        wrap,
     )
 
     with open("raw_spreadsheet_data/themes.csv") as file:
@@ -52,7 +57,7 @@ def compile_all():
         # skip the first line
         next(reader)
         for line in reader:
-            if all([len(x) == 0 for x in line]):
+            if end(line):
                 print("END OF FILE")
                 break
 
@@ -60,7 +65,7 @@ def compile_all():
                 bg = Image.open("assets/theme_card.png").convert("RGBA")
                 title = clean_raw_name(line[0])
                 text, cost, oracle_cost, flavor = (
-                    line[1].join(["\n", "\n"]),
+                    line[2].join(["\n", "\n"]),
                     line[3] if line[3] else "0",
                     line[4] if line[4] else 0,
                     line[5].join(["\n", "\n"]),
@@ -290,7 +295,7 @@ def compile_all():
                     font=cost_font,
                 )
 
-                bg.save(f"themes_output/{title}.png")
+                bg.save(f"{save_path}/{title}.png")
 
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{title}.png")
             # catch everything and print the error

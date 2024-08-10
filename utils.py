@@ -1,16 +1,24 @@
 from PIL import Image, ImageDraw, ImageFont
 
+def end(line: str):
+    return line[0].upper() == "EOF"
+
 def download_csv_file(name: str):
     import requests
     import sys
     import os
 
     id = "1wFRQ-EIMEUqx4yjBVeRkrX_5UgcV9rENszB5iZ4jkXM"
-    response = requests.get(f"https://docs.google.com/spreadsheets/d/{id}/gviz/tq?tqx=out:csv&sheet={name}")
+    response = requests.get(
+        f"https://docs.google.com/spreadsheets/d/{id}/gviz/tq?tqx=out:csv&sheet={name}"
+    )
 
     if response.status_code == 200:
         if not os.path.exists("raw_spreadsheet_data"):
             os.makedirs("raw_spreadsheet_data")
+
+        if os.path.exists(f"raw_spreadsheet_data/{name}.csv"):
+            os.remove(f"raw_spreadsheet_data/{name}.csv")
 
         with open(f"raw_spreadsheet_data/{name}.csv", "wb") as f:
             f.write(response.content)

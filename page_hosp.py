@@ -65,4 +65,3 @@ for j, path in enumerate(cards):
             paper = Image.new("RGB", (9 * dpi, 11 * dpi), (255, 255, 255))
     except FileNotFoundError:
         print(f"Missing {path}", end="")
-

@@ -1,8 +1,9 @@
 def compile_all():
     from PIL import Image, ImageDraw, ImageFont
-    from utils import colors, clean_raw_name, center_text, textsize 
+    from utils import colors, clean_raw_name, center_text, textsize, end
     import csv
 
+    save_path = "output/gifts"
     image_size = (500, 500)
     # special text offsets, dict with names and values for x and y
     special_text_offset = {
@@ -16,7 +17,6 @@ def compile_all():
     }
 
     try:
-
         print("Preliminary image loading...")
         gift_font = ImageFont.truetype("assets/regular.ttf", 64)
         weapon_ring = Image.open("assets/w.png").convert("RGBA")
@@ -34,20 +34,18 @@ def compile_all():
         next(reader)
         for line in reader:
             # check if the line only contains commas, which means it's a the end
-            if all([len(x) == 0 for x in line]):
+            if end(line):
                 print("END OF FILE")
                 break
 
             try:
                 name = clean_raw_name(line[0].upper().replace(" ", ""))
-                weight_class = line[1].lower()  # H, M, L
-                fame = line[2]
-                # sylvan val = line[3]
-                # freq = line[4]
+                weight_class = line[2].lower()  # H, M, L
+                fame = line[3]
+                # sylvan val = line[4]
                 special_text = line[5][1:]
-                text_location = line[6]
-                weapon_class = line[7]
-                additional_rule = line[8]
+                weapon_class = line[6]
+                additional_rule = line[7]
                 try:
                     tile = Image.open(f"assets/{weight_class}.png").convert("RGBA")
                     fg = Image.open(f"assets/gifts/{name}.png").convert("RGBA")
@@ -203,7 +201,7 @@ def compile_all():
                         font=gift_font,
                     )
 
-                final.save(f"gifts_output/{name}.png", dpi=(300, 300))
+                final.save(f"{save_path}/{name}.png", dpi=(300, 300))
                 print(colors.GREEN + "EXPORTED " + colors.ENDC + name + ".png")
             except Exception as e:
                 print(e.with_traceback())
