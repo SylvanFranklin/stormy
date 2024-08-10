@@ -76,7 +76,7 @@ def compile_all():
                 margins = 85
                 bg.paste(fg, fg_position, fg)
                 draw = ImageDraw.Draw(bg)
-                title = line[0]
+                title = line[0].upper()
                 title_width, title_height = textsize(title, body_font)
                 title_position = (
                     center_text(title, bg.width, title_font),
@@ -104,7 +104,7 @@ def compile_all():
                     current_h += h + pad
 
                 # flavor text
-                current_h += 10
+                current_h += 30
                 flavor = wrap(flavor, margins, bg.width, font=normal_flavor_font)
                 for line in flavor:
                     # what we want to do now, is go word by word, and insert insert the padding between each, so that they are flush with the sides of the card

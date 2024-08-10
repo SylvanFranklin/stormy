@@ -71,9 +71,6 @@ def compile_all():
                 (((bg.height - table.height) * 3) // 4),
             )
 
-            if not os.path.exists("voyage_output"):
-                os.makedirs("voyage_output")
-
         except Exception as e:
             print(e)
             return
@@ -162,7 +159,7 @@ def compile_all():
                     i = 0
                 i += 1
 
-                bg.save(f"{save_path}/{season}{i}.png")
+                bg.save(f"{save_path}/{season.upper()}{i}.png")
                 bg = Image.open("assets/waves.jpg").convert("RGBA")
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{season}{i}.png")
 

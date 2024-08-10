@@ -1,10 +1,11 @@
 def compile_all():
-    from PIL import Image, ImageDraw, ImageFont
-    from utils import colors, clean_raw_name, center_text, textsize, end
     import csv
 
+    from PIL import Image, ImageDraw, ImageFont, ImageColor
+    from utils import center_text, clean_raw_name, colors, end, textsize, wrap
+
     save_path = "output/gifts"
-    image_size = (500, 500)
+    image_size = (300, 300)
     # special text offsets, dict with names and values for x and y
     special_text_offset = {
         "GOAT": (0, -120),
@@ -22,7 +23,7 @@ def compile_all():
         weapon_ring = Image.open("assets/w.png").convert("RGBA")
         ranged_ring = Image.open("assets/r.png").convert("RGBA")
         armor_ring = Image.open("assets/a.png").convert("RGBA")
-        temp = Image.open("assets/gifts/NONE.tif").convert("RGBA")
+        # temp = Image.open("assets/gifts/NONE.tif").convert("RGBA")
         print(colors.GREEN + "DONE." + colors.ENDC)
 
     except FileNotFoundError:
@@ -49,17 +50,24 @@ def compile_all():
                 try:
                     tile = Image.open(f"assets/{weight_class}.png").convert("RGBA")
                     fg = Image.open(f"assets/gifts/{name}.png").convert("RGBA")
+                    # this will filter out any background, and resize the image to the desired size
+                    fg.thumbnail(image_size, Image.LANCZOS)
+                    for x in range(fg.width):
+                        for y in range(fg.height):
+                            r, g, b, a = fg.getpixel((x, y))
+                            if r > 200 and g > 200 and b > 200:
+                                fg.putpixel((x, y), (255, 255, 255, 0))
+
                 except FileNotFoundError:
                     print(colors.RED + "No image found for" + colors.ENDC + " " + name)
-                    fg = temp
-
-                # this will filter out any background, and resize the image to the desired size
-                fg.thumbnail(image_size, Image.LANCZOS)
-                for x in range(fg.width):
-                    for y in range(fg.height):
-                        r, g, b, a = fg.getpixel((x, y))
-                        if r > 200 and g > 200 and b > 200:
-                            fg.putpixel((x, y), (255, 255, 255, 0))
+                    fg = Image.new("RGBA", (image_size), (ImageColor.getrgb("#F9F3E2")))
+                    draw = ImageDraw.Draw(fg)
+                    draw.text(
+                        (center_text(line[0], image_size[0], gift_font), 100),
+                        line[0].replace(" ", "\n"),
+                        (0, 0, 0),
+                        font=gift_font,
+                    )
 
                 center = (
                     (tile.width - fg.width) // 2,
@@ -151,11 +159,7 @@ def compile_all():
                     tile.paste(cat_ring, cat_ring_position, cat_ring)
 
                 tile.paste(fg, center, fg)
-                canvas = Image.new("RGBA", (720, 720), "white")
-                canvas.paste(tile, (0, 0), tile)
-                final = canvas.convert("RGB")
-                draw = ImageDraw.Draw(final)
-
+                draw = ImageDraw.Draw(tile)
                 draw.text(
                     (center_text(fame, tile.width, gift_font), (tile.height - 160)),
                     fame + "*" if len(additional_rule) > 0 else fame,
@@ -200,6 +204,10 @@ def compile_all():
                         (245, 98, 81),
                         font=gift_font,
                     )
+                tile.thumbnail((450, 450), Image.LANCZOS)
+                canvas = Image.new("RGBA", (450, 450), "white")
+                canvas.paste(tile, (0, 0), tile)
+                final = canvas.convert("RGB")
 
                 final.save(f"{save_path}/{name}.png", dpi=(300, 300))
                 print(colors.GREEN + "EXPORTED " + colors.ENDC + name + ".png")

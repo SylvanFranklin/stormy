@@ -295,7 +295,7 @@ def compile_all():
                     font=cost_font,
                 )
 
-                bg.save(f"{save_path}/{title}.png")
+                bg.save(f"{save_path}/{clean_raw_name(title)}.png")
 
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{title}.png")
             # catch everything and print the error
