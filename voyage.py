@@ -6,8 +6,6 @@ def compile_all():
     from utils import (
         textsize,
         body_font,
-        normal_flavor_font,
-        italic_flavor_font,
         title_font,
         colors,
     )
@@ -66,6 +64,10 @@ def compile_all():
         try:
             bg = Image.open("assets/waves.jpg").convert("RGBA")
             table = Image.open("assets/wind.png").convert("RGBA")
+            div_line = Image.open("assets/line.png").convert("RGBA")
+            body_font = ImageFont.truetype("assets/regular.ttf", 34)
+            title_font = ImageFont.truetype("assets/regular.ttf", 60)
+
         except Exception as e:
             print(e)
             return
@@ -84,15 +86,22 @@ def compile_all():
                 season = line[0]
                 mp = line[2]
                 storm_location = line[3]
-                storm_damage_hull = line[4]
+                storm_damage_ship = line[4]
                 storm_damage_crew = line[5]
                 threshold = line[6]
                 swept_to = line[7]
 
                 table_pos = (
                     (bg.width - table.width) // 2,
-                    ((bg.height - table.height) * 3) // 4,
+                    (((bg.height - table.height) * 3) // 4) + 20,
                 )
+
+                div_line_pos = (
+                    (bg.width - div_line.width) // 2,
+                    (table_pos[1] - div_line.height - 54),
+                )
+
+                bg.paste(div_line, div_line_pos, div_line)
                 bg.paste(table, table_pos, table)
 
                 draw = ImageDraw.Draw(bg)
@@ -109,7 +118,7 @@ def compile_all():
                     font=title_font,
                 )
                 # next in the normal font size, draw the movement points just below the title
-                mp = f"MOVE: {mp}"
+                mp = f"Movement Points: {mp}"
                 mp_width, mp_height = textsize(mp, body_font)
                 mp_position = (
                     (bg.width) // 2,
@@ -140,36 +149,37 @@ def compile_all():
                 )
 
                 # now draw the swept_to location
-                swept_to = f"Swept to: {swept_to}"
-                swept_width, swept_height = textsize(swept_to, body_font)
-                swept_position = (
-                    bg.width // 2,
+                # now draw the damage to the ship and the crew, if there is no crew damage, don't bother displaying it
+                damage = (
+                    f"{storm_damage_ship} ship damage | {storm_damage_crew} crew damage"
+                )
+                ship_width, ship_height = textsize(storm_damage_ship, body_font)
+                damage_position = (
+                    (bg.width) // 2,
                     storm_position[1] + storm_height + 20,
                 )
+
                 draw.text(
-                    swept_position,
-                    swept_to,
+                    damage_position,
+                    damage,
                     (0, 0, 0),
                     font=body_font,
                     anchor="mm",
                 )
 
-                # now draw the damage to the hull and the crew, if there is no crew damage, don't bother displaying it
-                storm_damage_hull = (
-                    f"{storm_damage_hull} hull damage / {threshold} threshold"
-                )
-                hull_width, hull_height = textsize(storm_damage_hull, body_font)
-                hull_position = (
+                swept = f"Threshold: {threshold} | Swept to: {swept_to}"
+                swept_pos = (
                     (bg.width) // 2,
-                    swept_position[1] + swept_height + 20,
+                    div_line_pos[1] + 10,
                 )
                 draw.text(
-                    (((bg.width) // 2), hull_position[1]),
-                    storm_damage_hull,
+                    swept_pos,
+                    swept,
                     (0, 0, 0),
                     font=body_font,
                     anchor="mm",
                 )
+
                 wind_vals = wind_table_generator(season)
                 for j in range(9):
                     wind_val = wind_vals[j]
@@ -182,20 +192,6 @@ def compile_all():
                             anchor="mm",
                         )
 
-                if storm_damage_crew != "":
-                    storm_damage_crew = f"{storm_damage_crew} crew damage"
-                    crew_width, crew_height = textsize(storm_damage_crew, body_font)
-                    crew_position = (
-                        bg.width // 2,
-                        hull_position[1] + hull_height,
-                    )
-                    draw.text(
-                        crew_position,
-                        storm_damage_crew,
-                        (0, 0, 0),
-                        font=body_font,
-                        anchor="mm",
-                    )
                 # the pattern has margins of 175, and then to get to the center of the circles it's 50, because they are 100 in diameter
                 # there are nine circles, so we need to space them out evenly
                 # now we have to place the wind values, in the circles provided
@@ -205,6 +201,7 @@ def compile_all():
 
                 i += 1
                 bg.save(f"voyage_output/{season}{i}.png")
+                bg = Image.open("assets/waves.jpg").convert("RGBA")
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{season}{i}.png")
             # catch everything and print the error
             except Exception as e:
