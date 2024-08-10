@@ -5,6 +5,7 @@ def compile_all():
     import random
     import csv
     from utils import body_font, title_font, colors, end
+
     save_path = "output/voyage"
 
     def wind_table_generator(season):
