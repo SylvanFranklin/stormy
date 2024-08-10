@@ -1,6 +1,6 @@
-def compile_all(download_csv_file: bool = True):
+def compile_all():
     from PIL import Image, ImageDraw, ImageFont
-    from utils import colors, clean_raw_name, center_text, textsize, download_csv_file
+    from utils import colors, clean_raw_name, center_text, textsize 
     import csv
 
     image_size = (500, 500)
@@ -16,8 +16,6 @@ def compile_all(download_csv_file: bool = True):
     }
 
     try:
-        if download_csv_file:
-            download_csv_file("gifts")
 
         print("Preliminary image loading...")
         gift_font = ImageFont.truetype("assets/regular.ttf", 64)

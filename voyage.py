@@ -1,10 +1,10 @@
-def compile_all(download_csv_file: bool = True):
+def compile_all():
     from PIL import Image, ImageDraw, ImageFont, ImageColor
     import os
     import math
     import random
     import csv
-    from utils import body_font, title_font, colors, download_csv_file
+    from utils import body_font, title_font, colors 
 
     def wind_table_generator(season):
         if season == "Winter":
@@ -42,10 +42,6 @@ def compile_all(download_csv_file: bool = True):
         reader = csv.reader(file, skipinitialspace=True)
 
         try:
-            # get a new spreadsheet:
-            if download_csv_file:
-                download_csv_file("voyage")
-
             bg = Image.open("assets/waves.jpg").convert("RGBA")
             table = Image.open("assets/wind.png").convert("RGBA")
             # div_line = Image.open("assets/line.png").convert("RGBA")

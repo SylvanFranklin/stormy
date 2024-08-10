@@ -1,5 +1,5 @@
-def compile_all(download_csv_file: bool = True):
-    from PIL import Image, ImageDraw, ImageFont
+def compile_all():
+    from PIL import Image, ImageDraw 
     from utils import (
         clean_raw_name,
         textsize,
@@ -16,11 +16,6 @@ def compile_all(download_csv_file: bool = True):
     save_path = "hospitality_output"
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-
-    if download_csv_file:
-        from utils import download_csv_file
-
-        download_csv_file("hospo")
 
     image_size = (400, 600)
 

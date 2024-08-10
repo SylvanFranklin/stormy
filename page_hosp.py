@@ -19,7 +19,7 @@ hospitality.compile_all()
 
 
 cards = []
-with open("hosp.csv") as file:
+with open("raw_spreadsheet_data/hospitality.csv") as file:
     reader = csv.reader(file, skipinitialspace=True)
     # loop through and get the frequency [which is the third column]
     for line in reader:

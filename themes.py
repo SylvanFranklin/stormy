@@ -1,22 +1,21 @@
-def custom_split(string):
-    arr = []
-    current = ""
-    # we want to split the string by spaces, and by (, ), and by _, and keep the symbols in the array
-    for char in string:
-        if char == " ":
-            arr.append(current)
-            current = ""
-        elif char == "(" or char == ")" or char == "_":
-            arr.append(current)
-            arr.append(char)
-            current = ""
-        else:
-            current += char
+def compile_all():
+    def custom_split(string):
+        arr = []
+        current = ""
+        # we want to split the string by spaces, and by (, ), and by _, and keep the symbols in the array
+        for char in string:
+            if char == " ":
+                arr.append(current)
+                current = ""
+            elif char == "(" or char == ")" or char == "_":
+                arr.append(current)
+                arr.append(char)
+                current = ""
+            else:
+                current += char
 
-    return arr
+        return arr
 
-
-def compile_all(download_csv_file: bool = True):
     import csv
     import os
     import random
@@ -31,13 +30,9 @@ def compile_all(download_csv_file: bool = True):
         title_font,
         center_text,
         colors,
-        download_csv_file,
     )
 
-    if download_csv_file:
-        download_csv_file("themes")
-
-    with open("themes.csv") as file:
+    with open("raw_spreadsheet_data/themes.csv") as file:
         print(colors.BLUE + "Reading themes file" + colors.ENDC + "...")
         reader = csv.reader(file, skipinitialspace=True)
         image_size = (390, 600 - 15)
