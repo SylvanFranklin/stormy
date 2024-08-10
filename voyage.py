@@ -1,6 +1,7 @@
 def compile_all():
     from PIL import Image, ImageDraw, ImageFont, ImageColor
     import os
+    import math
     import random
     import csv
     from utils import (
@@ -64,9 +65,9 @@ def compile_all():
         try:
             bg = Image.open("assets/waves.jpg").convert("RGBA")
             table = Image.open("assets/wind.png").convert("RGBA")
-            div_line = Image.open("assets/line.png").convert("RGBA")
+            # div_line = Image.open("assets/line.png").convert("RGBA")
             body_font = ImageFont.truetype("assets/regular.ttf", 34)
-            title_font = ImageFont.truetype("assets/regular.ttf", 60)
+            title_font = ImageFont.truetype("assets/regular.ttf", 72)
 
         except Exception as e:
             print(e)
@@ -90,11 +91,12 @@ def compile_all():
                 storm_damage_crew = line[5]
                 threshold = line[6]
                 swept_to_location = line[7]
-                current_h = bg.width // 2
+                spacing = 48
+                current_h = bg.width // 10
 
                 table_pos = (
                     (bg.width - table.width) // 2,
-                    (((bg.height - table.height) * 3) // 4) + 20,
+                    (((bg.height - table.height) * 3) // 4),
                 )
 
                 bg.paste(table, table_pos, table)
@@ -110,8 +112,8 @@ def compile_all():
                     font=title_font,
                 )
                 # next in the normal font size, draw the movement points just below the title
-                current_h += title_height + 20
-                mp = f"Movement Points: {mp}"
+                current_h += spacing * 2
+                mp = f"MOVEMENT POINTS: {mp}"
                 mp_width, mp_height = textsize(mp, body_font)
                 mp_position = ((bg.width) // 2, current_h)
                 draw.text(
@@ -123,8 +125,8 @@ def compile_all():
                 )
 
                 # now draw the storm location
-                current_h += mp_height + 20
-                storm_location = f"Storm in {storm_location}!"
+                current_h += math.floor(spacing * 1.8)
+                storm_location = f"STORM: {storm_location}!"
                 storm_width, storm_height = textsize(storm_location, body_font)
                 storm_position = (bg.width // 2, current_h)
                 draw.text(
@@ -135,10 +137,8 @@ def compile_all():
                     anchor="mm",
                 )
 
-                current_h += storm_height + 20
-                damage = (
-                    f"{storm_damage_ship} ship damage | {storm_damage_crew} crew damage"
-                )
+                current_h += spacing
+                damage = f"DAMAGE: {storm_damage_ship} Ship | {storm_damage_crew} Crew"
                 damage_width, damage_height = textsize(damage, body_font)
                 damage_position = ((bg.width) // 2, current_h)
                 draw.text(
@@ -149,15 +149,15 @@ def compile_all():
                     anchor="mm",
                 )
 
-                current_h += damage_height + 20
-                div_line_pos = (
-                    (bg.width - div_line.width) // 2,
-                    current_h,
-                )
-                bg.paste(div_line, div_line_pos, div_line)
+                # current_h += 28
+                # div_line_pos = (
+                #     (bg.width - div_line.width) // 2,
+                #     current_h,
+                # )
+                # bg.paste(div_line, div_line_pos, div_line)
 
-                current_h += 20 + div_line.height
-                swept = f"Threshold: {threshold} | Swept to: {swept_to_location}"
+                current_h += spacing
+                swept = f"THRESHOLD: {threshold} | SWEPT TO: {swept_to_location}"
                 swept_pos = (
                     (bg.width) // 2,
                     current_h,
