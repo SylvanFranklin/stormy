@@ -1,8 +1,7 @@
-import themes
-# import gifts
+import gifts, voyage
 
-# voyage.compile_all()
+voyage.compile_all()
 # gifts.compile_all()
-themes.compile_all(True)
+# themes.compile_all(True)
 # hospitality.compile_all()
 # upgrades.compile_all()

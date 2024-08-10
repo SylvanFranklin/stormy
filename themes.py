@@ -1,11 +1,3 @@
-class colors:
-    RED = "\033[31m"
-    ENDC = "\033[m"
-    GREEN = "\033[32m"
-    YELLOW = "\033[33m"
-    BLUE = "\033[34m"
-
-
 def custom_split(string):
     arr = []
     current = ""
@@ -38,7 +30,9 @@ def compile_all(for_print):
         italic_flavor_font,
         title_font,
         center_text,
+        colors
     )
+
 
     with open("themes.csv") as file:
         print(colors.BLUE + "Reading themes file" + colors.ENDC + "...")
