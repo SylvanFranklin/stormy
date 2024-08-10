@@ -16,7 +16,7 @@ def custom_split(string):
     return arr
 
 
-def compile_all(for_print):
+def compile_all(download_csv_file: bool = True):
     import csv
     import os
     import random
@@ -31,7 +31,11 @@ def compile_all(for_print):
         title_font,
         center_text,
         colors,
+        download_csv_file,
     )
+
+    if download_csv_file:
+        download_csv_file("themes")
 
     with open("themes.csv") as file:
         print(colors.BLUE + "Reading themes file" + colors.ENDC + "...")
@@ -252,47 +256,46 @@ def compile_all(for_print):
                     current_w = 0
                     current_h += h + pad
 
-                if not for_print:
-                    back = Image.open("assets/rect.png")
-                    # paste at center
-                    back.paste(
-                        bg,
-                        ((back.width - bg.width) // 2, (back.height - bg.height) // 2),
-                        bg,
-                    )
-                    back.save(f"themes_output/{title}.png")
+                # if not for_print:
+                #     back = Image.open("assets/rect.png")
+                #     # paste at center
+                #     back.paste(
+                #         bg,
+                #         ((back.width - bg.width) // 2, (back.height - bg.height) // 2),
+                #         bg,
+                #     )
+                #     back.save(f"themes_output/{title}.png")
 
-                else:
-                    # add the cost circle to the upper right corner
-                    insert = 20
-                    circle_chords = (bg.width - 98 - insert, insert)
+                # add the cost circle to the upper right corner
+                insert = 20
+                circle_chords = (bg.width - 98 - insert, insert)
+                bg.paste(
+                    cost_circle,
+                    circle_chords,
+                    cost_circle,
+                )
+
+                if oracle_cost != 0:
+                    oracle_cost_chords = (bg.width - 98 - insert - 80, insert + 10)
                     bg.paste(
-                        cost_circle,
-                        circle_chords,
-                        cost_circle,
+                        oracle_cost_circle,
+                        oracle_cost_chords,
+                        oracle_cost_circle,
                     )
 
-                    if oracle_cost != 0:
-                        oracle_cost_chords = (bg.width - 98 - insert - 80, insert + 10)
-                        bg.paste(
-                            oracle_cost_circle,
-                            oracle_cost_chords,
-                            oracle_cost_circle,
-                        )
+                # the text should always be in the center of the circle
+                cost_size = textsize(cost, cost_font)
+                draw.text(
+                    (
+                        circle_chords[0] + (98 - cost_size[0]) // 2,
+                        circle_chords[1] - 10,
+                    ),
+                    cost,
+                    (0, 0, 0),
+                    font=cost_font,
+                )
 
-                    # the text should always be in the center of the circle
-                    cost_size = textsize(cost, cost_font)
-                    draw.text(
-                        (
-                            circle_chords[0] + (98 - cost_size[0]) // 2,
-                            circle_chords[1] - 10,
-                        ),
-                        cost,
-                        (0, 0, 0),
-                        font=cost_font,
-                    )
-
-                    bg.save(f"themes_output/{title}.png")
+                bg.save(f"themes_output/{title}.png")
 
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{title}.png")
             # catch everything and print the error

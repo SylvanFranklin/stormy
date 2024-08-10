@@ -1,4 +1,4 @@
-def compile_all():
+def compile_all(download_csv_file: bool = True):
     from PIL import Image, ImageDraw, ImageFont
     from utils import (
         clean_raw_name,
@@ -16,6 +16,12 @@ def compile_all():
     save_path = "hospitality_output"
     if not os.path.exists(save_path):
         os.makedirs(save_path)
+
+    if download_csv_file:
+        from utils import download_csv_file
+
+        download_csv_file("hospo")
+
     image_size = (400, 600)
 
     class colors:
@@ -26,7 +32,7 @@ def compile_all():
         BLUE = "\033[34m"
 
     # get all the images names from assets/upgrades
-    with open("hosp.csv") as file:
+    with open("raw_spreadsheet_data/hosp.csv") as file:
         print(colors.YELLOW + "Reading hospitality file" + colors.ENDC + "...")
         reader = csv.reader(file, skipinitialspace=True)
 

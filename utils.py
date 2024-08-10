@@ -1,5 +1,25 @@
 from PIL import Image, ImageDraw, ImageFont
 
+
+def download_csv_file(name: str):
+    import requests
+    import sys
+    import os
+
+    id = "1wFRQ-EIMEUqx4yjBVeRkrX_5UgcV9rENszB5iZ4jkXM"
+    response = requests.get(f"https://docs.google.com/spreadsheets/d/{id}/gviz/tq?tqx=out:csv&sheet={name}")
+
+    if response.status_code == 200:
+        if not os.path.exists("raw_spreadsheet_data"):
+            os.makedirs("raw_spreadsheet_data")
+
+        with open(f"raw_spreadsheet_data/{name}.csv", "wb") as f:
+            f.write(response.content)
+    else:
+        print(f"Error downloading Google Sheet: {response.status_code}")
+        sys.exit(1)
+
+
 class colors:
     RED = "\033[31m"
     ENDC = "\033[m"

@@ -1,6 +1,6 @@
-def compile_all():
+def compile_all(download_csv_file: bool = True):
     from PIL import Image, ImageDraw, ImageFont
-    from utils import colors, clean_raw_name, center_text, textsize
+    from utils import colors, clean_raw_name, center_text, textsize, download_csv_file
     import csv
 
     image_size = (500, 500)
@@ -16,6 +16,9 @@ def compile_all():
     }
 
     try:
+        if download_csv_file:
+            download_csv_file("gifts")
+
         print("Preliminary image loading...")
         gift_font = ImageFont.truetype("assets/regular.ttf", 64)
         weapon_ring = Image.open("assets/w.png").convert("RGBA")
@@ -28,7 +31,7 @@ def compile_all():
         print(colors.RED + "ERROR: Font or ring image not found." + colors.ENDC)
         return
 
-    with open("gifts.csv") as file:
+    with open("raw_spreadsheet_data/gifts.csv") as file:
         reader = csv.reader(file)
         next(reader)
         for line in reader:
