@@ -204,9 +204,16 @@ def compile_all():
                         font=gift_font,
                     )
                 tile.thumbnail((450, 450), Image.LANCZOS)
-                canvas = Image.new("RGBA", (450, 450), "white")
+                canvas = Image.new("RGBA", (450, 450), (255, 255, 255))
+
                 canvas.paste(tile, (0, 0), tile)
-                final = canvas.convert("RGB")
+                final = canvas.convert("RGBA")
+
+                for x in range(final.width):
+                    for y in range(final.height):
+                        r, g, b, a = final.getpixel((x, y))
+                        if r == 255 and g == 255 and b == 255:
+                            final.putpixel((x, y), (255, 255, 255, 0))
 
                 final.save(f"{save_path}/{name}.png", dpi=(300, 300))
                 print(colors.GREEN + "EXPORTED " + colors.ENDC + name + ".png")

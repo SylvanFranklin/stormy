@@ -3,7 +3,7 @@ Board game for 2–4 players themed in and around the Odyssey. Players take on t
 
 <!-- some images -->
 ![](./example_imgs/NIGHTVOYAGE.png "title")
-![](./example_imgs/COMMONSPEAR.png "title")
+![](./example_imgs/gifts.png "title")
 
 ***Credits***
 - Artwork for board and cards: Glynnis Fawkes.
