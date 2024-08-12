@@ -1,8 +1,20 @@
-*.png
-*.jpg
-*.pdf
-*.DS_Store
-*.log
-*.tif
-*.tiff
+
+# ignore all pdf, png, jpg, log, tif, tiff, and DS_Store files in the assets and assets directories, and subdirectories
+assets/**/*.pdf
+assets/**/*.png
+assets/**/*.jpg
+assets/**/*.log
+assets/**/*.tif
+assets/**/*.tiff
+assets/**/*.DS_Store
+
+output/**/*.pdf
+output/**/*.png
+output/**/*.jpg
+output/**/*.log
+output/**/*.tif
+output/**/*.tiff
+output/**/*.DS_Store
+raw_spreadsheet_data/.DS_Store
+.DS_Store
 __pycache__
