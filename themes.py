@@ -21,6 +21,7 @@ def compile_all():
     import csv
     import os
     import random
+    import math
 
     from PIL import Image, ImageDraw, ImageFont
 
@@ -214,9 +215,7 @@ def compile_all():
                     current_h += h + pad
 
                 # flavor text
-
                 flavor = wrap(flavor, margins, bg.width, font=italic_flavor_font)
-
                 in_parens = False
                 current_h -= 70
                 # margins = 80
@@ -295,8 +294,17 @@ def compile_all():
                     font=cost_font,
                 )
 
-                bg.save(f"{save_path}/{clean_raw_name(title)}.png")
+                Template = Image.new("RGBA", (825, 1125), (180, 64, 65))
+                Template.paste(
+                    bg,
+                    (
+                        (Template.width - bg.width) // 2,
+                        (Template.height - bg.height) // 2,
+                    ),
+                    bg,
+                )
 
+                Template.save(f"{save_path}/{clean_raw_name(title)}.png")
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{title}.png")
             # catch everything and print the error
             except Exception as e:

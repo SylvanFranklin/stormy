@@ -26,7 +26,6 @@ if __name__ == "__main__":
         hospitality.compile_all()
         voyage.compile_all()
     else:
-
         if "gifts" in args:
             gifts.compile_all()
         if "themes" in args:

@@ -131,6 +131,7 @@ def compile_all():
                     current_h += h + pad
 
                 bg = bg.convert("RGB")
+                bg.thumbnail((825, 1125), Image.LANCZOS)
                 bg.save(f"{save_path}/{clean_raw_name(title)}.png")
 
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{encounter}.png")

@@ -1,11 +1,10 @@
 def compile_all():
     import csv
-
     from PIL import Image, ImageDraw, ImageFont, ImageColor
     from utils import center_text, clean_raw_name, colors, end, textsize, wrap
 
     save_path = "output/gifts"
-    image_size = (300, 300)
+    image_size = (500, 500)
     # special text offsets, dict with names and values for x and y
     special_text_offset = {
         "GOAT": (0, -120),

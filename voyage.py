@@ -160,6 +160,7 @@ def compile_all():
                 i += 1
 
                 bg.save(f"{save_path}/{season.upper()}{i}.png")
+                bg.thumbnail((825, 1125), Image.LANCZOS)
                 bg = Image.open("assets/waves.jpg").convert("RGBA")
                 print(colors.GREEN + "Exported: " + colors.ENDC + f"{season}{i}.png")
 
