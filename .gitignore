@@ -3,10 +3,12 @@
 assets/**/*.pdf
 assets/**/*.png
 assets/**/*.jpg
+assets/**/*.jpeg
 assets/**/*.log
 assets/**/*.tif
 assets/**/*.tiff
 assets/**/*.DS_Store
+.csv
 
 output/**/*.pdf
 output/**/*.png
