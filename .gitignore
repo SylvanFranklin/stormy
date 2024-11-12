@@ -20,3 +20,4 @@ output/**/*.DS_Store
 raw_spreadsheet_data/.DS_Store
 .DS_Store
 __pycache__
+raw_spreadsheet_data
