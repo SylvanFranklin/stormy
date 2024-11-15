@@ -31,6 +31,7 @@ def compile_all():
         clean_raw_name,
         colors,
         end,
+        missing_art_error,
         italic_flavor_font,
         normal_flavor_font,
         textsize,
@@ -153,10 +154,7 @@ def compile_all():
                         fg = Image.open(f"assets/themes/{title}.png").convert("RGBA")
 
                 except Exception as _:
-                    print(
-                        colors.BLUE + "(Using default Image)" + colors.ENDC,
-                        end=" ",
-                    )
+                    print(missing_art_error(title))
                     fg = Image.new(
                         "RGBA",
                         (image_size[0] // 2, image_size[1] // 2),

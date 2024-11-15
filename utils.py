@@ -79,3 +79,7 @@ body_font = ImageFont.truetype("assets/regular.ttf", 27)
 title_font = ImageFont.truetype("assets/regular.ttf", 34)
 italic_flavor_font = ImageFont.truetype("assets/italic.ttf", 24)
 normal_flavor_font = ImageFont.truetype("assets/regular.ttf", 24)
+
+def missing_art_error(name): 
+    return colors.RED + "MISSING ART FOR " + colors.ENDC + name + colors.RED + " USING DEFAULT" + colors.ENDC
+

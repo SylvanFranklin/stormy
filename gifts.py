@@ -1,7 +1,7 @@
 def compile_all():
     import csv
     from PIL import Image, ImageDraw, ImageFont, ImageColor
-    from utils import center_text, clean_raw_name, colors, end, textsize, wrap
+    from utils import center_text, clean_raw_name, colors, end, textsize, missing_art_error 
 
     save_path = "output/gifts"
     image_size = (500, 500)
@@ -58,7 +58,7 @@ def compile_all():
                                 fg.putpixel((x, y), (255, 255, 255, 0))
 
                 except FileNotFoundError:
-                    print(colors.RED + "No image found for" + colors.ENDC + " " + name)
+                    print(missing_art_error(name))
                     fg = Image.new("RGBA", (image_size), (ImageColor.getrgb("#F9F3E2")))
                     draw = ImageDraw.Draw(fg)
                     draw.text(
