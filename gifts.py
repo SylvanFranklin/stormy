@@ -60,13 +60,15 @@ def compile_all():
                 except FileNotFoundError:
                     print(missing_art_error(name))
                     fg = Image.new("RGBA", (image_size), (ImageColor.getrgb("#F9F3E2")))
-                    draw = ImageDraw.Draw(fg)
-                    draw.text(
-                        (center_text(line[0], image_size[0], gift_font), 100),
-                        line[0].replace(" ", "\n"),
-                        (0, 0, 0),
-                        font=gift_font,
-                    )
+                    fg.thumbnail(image_size, Image.LANCZOS)
+
+                    # draw = ImageDraw.Draw(fg)
+                    # draw.text(
+                    #     (center_text(line[0], image_size[0], gift_font), 100),
+                    #     line[0].replace(" ", "\n"),
+                    #     (0, 0, 0),
+                    #     font=gift_font,
+                    # )
 
                 center = (
                     (tile.width - fg.width) // 2,
