@@ -63,8 +63,9 @@ def compile_all():
                     fg.thumbnail(image_size, Image.LANCZOS)
 
                     draw = ImageDraw.Draw(fg)
+                    first_word = line[0].split(" ")[0]
                     draw.text(
-                        (center_text(line[0], image_size[0], gift_font), 100),
+                        (center_text(first_word, 500, gift_font), 100),
                         line[0].replace(" ", "\n"),
                         (0, 0, 0),
                         font=gift_font,
