@@ -63,13 +63,16 @@ def compile_all():
                     fg.thumbnail(image_size, Image.LANCZOS)
 
                     draw = ImageDraw.Draw(fg)
-                    first_word = line[0].split(" ")[0]
-                    draw.text(
-                        (center_text(first_word, 500, gift_font), 100),
-                        line[0].replace(" ", "\n"),
-                        (0, 0, 0),
-                        font=gift_font,
-                    )
+
+                    offset = 90
+                    for word in line[0].split(" "):
+                        draw.text(
+                            (center_text(word, 500, gift_font), offset),
+                            word,
+                            (0, 0, 0),
+                            font=gift_font,
+                        )
+                        offset += 70
 
                 center = (
                     (tile.width - fg.width) // 2,
