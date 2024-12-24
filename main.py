@@ -1,5 +1,4 @@
 if __name__ == "__main__":
-    from multiprocessing import Pool
     import sys
     import gifts
     import voyage
@@ -12,12 +11,9 @@ if __name__ == "__main__":
 
     if "dl" in args:
         print("Downloading files...")
-        # with Pool() as p:
-        #     p.imap_unordered(
-        #         utils.download_csv_file, ["voyage", "hospitality", "gifts", "themes"]
-        #     )
         for i in ["voyage", "hospitality", "gifts", "themes"]:
             utils.download_csv_file(i)
+        print("Done")
 
     if "compile" in args:
         print("Compiling files...")

@@ -8,8 +8,6 @@ assets/**/*.log
 assets/**/*.tif
 assets/**/*.tiff
 assets/**/*.DS_Store
-.csv
-
 output/**/*.pdf
 output/**/*.png
 output/**/*.jpg
@@ -20,5 +18,4 @@ output/**/*.DS_Store
 raw_spreadsheet_data/.DS_Store
 .DS_Store
 __pycache__
-raw_spreadsheet_data
 old assets
