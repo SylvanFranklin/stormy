@@ -20,6 +20,7 @@ def compile_all():
         print("Loading assets...")
         gift_font = ImageFont.truetype("assets/regular.ttf", 64)
         weapon_ring = Image.open("assets/w.png").convert("RGBA")
+        expert_ring = Image.open("assets/expert.png").convert("RGBA")
         ranged_ring = Image.open("assets/r.png").convert("RGBA")
         armor_ring = Image.open("assets/a.png").convert("RGBA")
         print(colors.GREEN + "Assets loaded successfully." + colors.ENDC)
@@ -78,6 +79,7 @@ def compile_all():
 
                     # Add rings for weapon class
                     try:
+
                         if "n" not in weapon_class:
                             weapon_half_ring = weapon_ring.crop(
                                 (0, 0, weapon_ring.width // 2, weapon_ring.height)
@@ -89,6 +91,7 @@ def compile_all():
                                 (ranged_ring.width // 2, 0, ranged_ring.width, ranged_ring.height)
                             )
                             height = (tile.height - weapon_half_ring.height + 9) // 2
+
 
                             if "w" in weapon_class and "a" in weapon_class:
                                 tile.paste(
@@ -119,7 +122,7 @@ def compile_all():
                                     ranged_half_ring,
                                 )
                             else:
-                                ring_map = {"w": weapon_ring, "a": armor_ring, "r": ranged_ring}
+                                ring_map = {"w": weapon_ring, "a": armor_ring, "r": ranged_ring, "x": expert_ring}
                                 second_ring = ring_map.get(weapon_class, None)
                                 if second_ring:
                                     second_width, second_height = second_ring.size
@@ -131,13 +134,19 @@ def compile_all():
                                         ),
                                         second_ring,
                                     )
-                        elif not tradable:
+
+
+
+
+
+                        if not tradable:
                             trade_ring = Image.open("assets/tradable.png").convert("RGBA")
                             trade_ring_position = (
                                 (tile.width - trade_ring.width) // 2,
-                                height,
+                                (tile.height - trade_ring.height) // 2,
                             )
                             tile.paste(trade_ring, trade_ring_position, trade_ring)
+
                     except FileNotFoundError as e:
                         print(colors.RED + f"ERROR: Missing ring asset. {str(e)}" + colors.ENDC)
 
