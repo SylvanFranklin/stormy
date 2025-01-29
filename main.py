@@ -16,11 +16,7 @@ if "dl" in args:
 
 if "compile" in args:
     print("Compiling files...")
-    gifts.compile_all()
-    themes.compile_all()
-    hospitality.compile_all()
-    voyage.compile_all()
-else:
+
     if "gifts" in args:
         gifts.compile_all()
     if "themes" in args:
@@ -28,6 +24,12 @@ else:
     if "hospitality" in args:
         hospitality.compile_all()
     if "voyage" in args:
+        voyage.compile_all()
+
+    if len(args) == 1: 
+        gifts.compile_all()
+        themes.compile_all()
+        hospitality.compile_all()
         voyage.compile_all()
 
 if "pages" in args:
