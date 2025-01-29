@@ -20,8 +20,6 @@ def compile_all():
 
     import csv
     import os
-    import random
-    import math
 
     from PIL import Image, ImageDraw, ImageFont
 
@@ -30,9 +28,8 @@ def compile_all():
         center_text,
         clean_raw_name,
         colors,
-        end,
-        missing_art_error,
         italic_flavor_font,
+        missing_art_error,
         normal_flavor_font,
         textsize,
         title_font,
@@ -55,14 +52,8 @@ def compile_all():
 
         available_theme_art = os.listdir("assets/themes")
         available_theme_art.remove(".DS_Store")
-
-        # skip the first line
         next(reader)
         for line in reader:
-            if end(line):
-                print("END OF FILE")
-                break
-
             try:
                 bg = Image.open("assets/theme_card.png").convert("RGBA")
                 title = clean_raw_name(line[0])
@@ -73,82 +64,9 @@ def compile_all():
                     line[5].join(["\n", "\n"]),
                 )
 
-                # for weird art cases
                 try:
                     if title.find("PIRATE") != -1:
                         fg = Image.open("assets/themes/PIRATESGENERIC.png")
-
-                    elif title.find("SEAPEOPLE") != -1:
-                        # need to open three of the same sea person image, and put them side by side scaled way down
-                        # create a new image of the size
-
-                        if title.find("MIXED") != -1:
-                            people = [
-                                "SEAPEOPLESDANUNA",
-                                "SEAPEOPLESPELESET",
-                                "SEAPEOPLESSHAKLUSHA",
-                                "SEAPEOPLESSHARDANA",
-                                "SEAPEOPLESTJEKKERU",
-                                "SEAPEOPLESWASHASH",
-                            ]
-
-                            people_backdrop = Image.new(
-                                "RGBA",
-                                (image_size[0], image_size[1]),
-                                (255, 255, 255, 0),
-                            )
-                            for i in range(3):
-                                person = Image.open(
-                                    f"assets/themes/{random.choice(people)}.png"
-                                ).convert("RGBA")
-                                person.thumbnail(
-                                    (person.width // 4, person.height // 4)
-                                )
-
-                                # make the background transparent (255, 255, 255, 0)
-                                for x in range(person.width):
-                                    for y in range(person.height):
-                                        r, g, b, a = person.getpixel((x, y))
-                                        if r > 200 and g > 200 and b > 200:
-                                            person.putpixel((x, y), (255, 255, 255, 0))
-
-                                people_backdrop.paste(
-                                    person,
-                                    (i * (person.width // 4) * 3, bg.width // 6),
-                                    person,
-                                )
-
-                            fg = people_backdrop
-
-                        else:
-                            people_backdrop = Image.new(
-                                "RGBA",
-                                (image_size[0], image_size[1]),
-                                (255, 255, 255, 0),
-                            )
-                            for i in range(3):
-                                person = Image.open(
-                                    f"assets/themes/{title}.png"
-                                ).convert("RGBA")
-                                person.thumbnail(
-                                    (person.width // 4, person.height // 4)
-                                )
-
-                                # make the background transparent (255, 255, 255, 0)
-                                for x in range(person.width):
-                                    for y in range(person.height):
-                                        r, g, b, a = person.getpixel((x, y))
-                                        if r > 200 and g > 200 and b > 200:
-                                            person.putpixel((x, y), (255, 255, 255, 0))
-
-                                people_backdrop.paste(
-                                    person,
-                                    (i * (person.width // 4) * 3, bg.width // 6),
-                                    person,
-                                )
-
-                            fg = people_backdrop
-
                     else:
                         # the basic case
                         fg = Image.open(f"assets/themes/{title}.png").convert("RGBA")
@@ -166,7 +84,7 @@ def compile_all():
                 fg.thumbnail(image_size, Image.LANCZOS)
                 for x in range(fg.width):
                     for y in range(fg.height):
-                        r, g, b, a = fg.getpixel((x, y))
+                        r, g, b = fg.getpixel((x, y))
                         if r > 200 and g > 200 and b > 200:
                             fg.putpixel((x, y), (255, 255, 255, 0))
 

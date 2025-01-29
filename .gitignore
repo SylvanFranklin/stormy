@@ -19,3 +19,9 @@ raw_spreadsheet_data/.DS_Store
 .DS_Store
 __pycache__
 old assets
+
+# pixi environments
+.pixi
+*.egg-info
+# magic environments
+.magic

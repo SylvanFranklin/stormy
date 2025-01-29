@@ -1,4 +1,4 @@
-def layout_pages(card_set: str):
+def layout_pages(card_set):
     import os
     import csv
     import math
