@@ -10,7 +10,7 @@ args = sys.argv[1:]
 
 if "dl" in args:
     print("Downloading files...")
-    for i in ["voyage", "hospitality", "gifts", "themes"]:
+    for i in ["voyage", "hospitality", "gifts", "themes", "new themes"]:
         utils.download_csv_file(i)
     print("Done")
 
@@ -26,7 +26,7 @@ if "compile" in args:
     if "voyage" in args:
         voyage.compile_all()
 
-    if len(args) == 1: 
+    if len(args) == 1:
         gifts.compile_all()
         themes.compile_all()
         hospitality.compile_all()
