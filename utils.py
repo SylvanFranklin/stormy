@@ -1,31 +1,44 @@
 from PIL import Image, ImageDraw, ImageFont
+import requests
+import sys
+import os
 
 
 def end(line):
     return line[0].upper() == "EOF"
 
 
-def download_csv_file(name: str):
-    import requests
-    import sys
-    import os
+def download_csv_file(
+    name: str, sheet_id: str = "1wFRQ-EIMEUqx4yjBVeRkrX_5UgcV9rENszB5iZ4jkXM"
+):
+    print(f"Downloading sheet: {name}")
 
-    id = "1wFRQ-EIMEUqx4yjBVeRkrX_5UgcV9rENszB5iZ4jkXM"
-    response = requests.get(
-        f"https://docs.google.com/spreadsheets/d/{id}/gviz/tq?tqx=out:csv&sheet={name}"
-    )
+    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={name}"
 
-    if response.status_code == 200:
-        if os.path.exists(f"raw_spreadsheet_data/{name}.csv"):
-            os.remove(f"raw_spreadsheet_data/{name}.csv")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
 
-        if not os.path.exists("raw_spreadsheet_data"):
-            os.makedirs("raw_spreadsheet_data")
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()  # Handle HTTP errors
 
-        with open(f"raw_spreadsheet_data/{name}.csv", "wb") as f:
+        # Check for redirection to Google login page
+        if response.url.startswith("https://accounts.google.com/"):
+            print("⚠️ Access Denied: The Google Sheet is not publicly accessible.")
+            sys.exit(1)
+
+        output_dir = "raw_spreadsheet_data"
+        os.makedirs(output_dir, exist_ok=True)
+
+        file_path = os.path.join(output_dir, f"{name}.csv")
+        with open(file_path, "wb") as f:
             f.write(response.content)
-    else:
-        print(f"Error downloading Google Sheet: {response.status_code}")
+
+        print(f"✅ Downloaded successfully: {file_path}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error downloading Google Sheet: {e}")
         sys.exit(1)
 
 
@@ -122,6 +135,7 @@ def clear_directory(directory_path):
 
 def list_art_files(path):
     import os
+
     valid_extensions = ("png", "jpeg", "jpg", "tiff", "tif")
     final = set()
 
