@@ -7,8 +7,10 @@ from utils import colors, end, clear_directory
 SAVE_PATH = "output/voyage"
 ASSETS = {
     "bg": "assets/bg/waves.jpg",
-    "table": "assets/wind.png",
+    "table": "assets/components/wind.png",
     "font": "assets/regular.ttf",
+    "storm": "assets/components/stormarrow.png",
+    "diagonalstorm": "assets/components/diagonalstormarrow.png",
 }
 SEASON_COLORS = {
     "Winter": "#2D649D",
@@ -38,12 +40,14 @@ def load_assets():
     try:
         bg = Image.open(ASSETS["bg"]).convert("RGBA")
         table = Image.open(ASSETS["table"]).convert("RGBA")
+        arrow = Image.open(ASSETS["storm"]).convert("RGBA")
+        diagonal_arrow = Image.open(ASSETS["diagonalstorm"]).convert("RGBA")
         body_font = ImageFont.truetype(ASSETS["font"], 34)
         title_font = ImageFont.truetype(ASSETS["font"], 90)
-        return bg, table, body_font, title_font
+        return bg, table, body_font, title_font, arrow, diagonal_arrow
     except Exception as e:
         print("Error loading assets:", e)
-        return None, None, None, None
+        return None, None, None, None, None, None
 
 
 def draw_text(draw, position, text, color, font):
@@ -56,17 +60,23 @@ def process_voyage_data():
         reader = csv.reader(file, skipinitialspace=True)
         next(reader)
 
-        bg, table, body_font, title_font = load_assets()
+        bg, table, body_font, title_font, storm_arrow, diagonal_arrow = load_assets()
         if not bg:
             return
 
         half_width = bg.width // 2
         spacing = 48
         table_pos = (
-            (bg.width - table.width) // 2,
-            (((bg.height - table.height) * 3) // 4),
+            (storm_arrow.width - table.width) // 2,
+            ((storm_arrow.height - table.height) // 2),
         )
-        circle_chords = [(200 + (j % 3) * 175, 500 + (j // 3) * 175) for j in range(9)]
+        # position the storm arrow on top of the table, making sure it is centered
+        storm_arrow_pos = (
+            (bg.width - storm_arrow.width) // 2,
+            (((bg.height - storm_arrow.height) * 3) // 4),
+        )
+
+        circle_chords = [(200 + (j % 3) * 175, 460 + (j // 3) * 175) for j in range(9)]
 
         for i, line in enumerate(reader, start=1):
             if end(line):
@@ -84,10 +94,21 @@ def process_voyage_data():
                     threshold,
                     swept_to_location,
                 ) = line[:8]
+
+                local_arrow = storm_arrow.copy()
+                local_table = table.copy()
+                canvas = bg.copy()
+
                 wind_vals = generate_wind_table(season)
 
-                bg.paste(table, table_pos, table)
-                draw = ImageDraw.Draw(bg)
+                local_arrow = local_arrow.rotate(
+                    random.choice([0, 90, 180, 270]), expand=True
+                )
+
+                local_arrow.paste(local_table, table_pos, local_table)
+
+                canvas.paste(local_arrow, storm_arrow_pos, local_arrow)
+                draw = ImageDraw.Draw(canvas)
                 current_h = bg.width // 10
 
                 draw_text(
@@ -105,14 +126,14 @@ def process_voyage_data():
                     "black",
                     body_font,
                 )
-                current_h += math.floor(spacing * 1.8)
-                draw_text(
-                    draw,
-                    (half_width, current_h),
-                    f"STORM: {storm_location}!",
-                    "black",
-                    body_font,
-                )
+                # current_h += math.floor(spacing * 1.8)
+                # draw_text(
+                #     draw,
+                #     (half_width, current_h),
+                #     f"STORM: {storm_location}!",
+                #     "black",
+                #     body_font,
+                # )
                 current_h += spacing
                 draw_text(
                     draw,
@@ -125,7 +146,7 @@ def process_voyage_data():
                 draw_text(
                     draw,
                     (half_width, current_h),
-                    f"THRESHOLD: {threshold} | SWEPT TO: {swept_to_location}",
+                    f"SWEPT TO: {swept_to_location}",
                     "black",
                     body_font,
                 )
@@ -137,9 +158,8 @@ def process_voyage_data():
                         )
 
                 filename = f"{SAVE_PATH}/{season.upper()}{i}.png"
-                bg.save(filename)
-                bg.thumbnail((825, 1125), Image.LANCZOS)
-                bg = Image.open(ASSETS["bg"]).convert("RGBA")
+                canvas.save(filename)
+                canvas.thumbnail((825, 1125), Image.LANCZOS)
                 print(colors.GREEN + "Exported: " + colors.ENDC + filename)
 
             except Exception as e:
@@ -149,4 +169,3 @@ def process_voyage_data():
 def compile_all():
     clear_directory(SAVE_PATH)
     process_voyage_data()
-
