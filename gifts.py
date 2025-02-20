@@ -16,7 +16,7 @@ def load_assets():
     """Load necessary image assets and return as a dictionary."""
     try:
         print("Loading assets...")
-        path = "assets/gifts/components"
+        path = "assets/components"
         assets = {
             "font": ImageFont.truetype("assets/regular.ttf", 64),
             "background": Image.open(f"{path}/bg.png").convert("RGBA"),
@@ -25,10 +25,12 @@ def load_assets():
             "ranged": Image.open(f"{path}/ranged.png").convert("RGBA"),
             "expert": Image.open(f"{path}/expert.png").convert("RGBA"),
             "notrade": Image.open(f"{path}/notrade.png").convert("RGBA"),
-            "stack": Image.open(f"{path}/stack.png").convert("RGBA"),
+            "pot": Image.open(f"{path}/pot.png").convert("RGBA"),
+            "raw": Image.open(f"{path}/raw.png").convert("RGBA"),
             "heavy": Image.open(f"{path}/heavy.png").convert("RGBA"),
             "medium": Image.open(f"{path}/medium.png").convert("RGBA"),
             "light": Image.open(f"{path}/light.png").convert("RGBA"),
+            "none": Image.open("assets/gifts/NONE.tif").convert("RGBA"),
         }
         print(colors.GREEN + "Assets loaded successfully." + colors.ENDC)
         return assets
@@ -38,7 +40,6 @@ def load_assets():
 
 
 def determine_ring(kind, weight, assets):
-    """Determine the appropriate ring image based on kind and weight."""
     if "w" in kind:
         return assets["weapon"].copy()
     elif "a" in kind:
@@ -47,13 +48,16 @@ def determine_ring(kind, weight, assets):
         return assets["ranged"].copy()
     elif "x" in kind:
         return assets["expert"].copy()
+    elif "p" in weight:
+        return assets["pot"].copy()
+    elif "r" in weight:
+        return assets["raw"].copy()
     elif weight == "h":
         return assets["heavy"].copy()
     elif weight == "m":
         return assets["medium"].copy()
-    elif weight == "l":
+    else:
         return assets["light"].copy()
-    return assets["stack"].copy()
 
 
 def process_image_transparency(image):
@@ -99,29 +103,56 @@ def process_special_text(draw, font, name, special_text, ring):
     )
 
 
+def extract_line_data(line, debug=False):
+    name = clean_raw_name(line[0].upper().replace(" ", ""))
+    cargo_type, fame, special_text, kind, additional_rule, tradable = (
+        line[2].lower(),  # Cargo Type
+        line[3],  # Fame
+        line[4][1:],  # Special Text
+        line[5],  # Kind
+        line[6],  # Additional Rule
+        len(line[7]) == 0,  # Tradable
+    )
+
+    if debug:
+        print(f"Name: {name}")
+        print(f"Special Text: {special_text}")
+        print(f"Kind: {kind}")
+        print(f"Weight: {cargo_type}")
+        print(f"Fame: {fame}")
+        print(f"Additional Rule: {additional_rule}")
+        print(f"Tradable: {tradable}")
+
+    return name, cargo_type, fame, special_text, kind, additional_rule, tradable
+
+
 def process_gift_entry(line, assets, save_path, unused_art):
     """Process a single line from the CSV file."""
     try:
-        name = clean_raw_name(line[0].upper().replace(" ", ""))
-        unused_art.discard(name)
-        weight, fame, special_text, kind, stackable, additional_rule, tradable = (
-            line[2].lower(),
-            line[3],
-            line[5][1:],
-            line[6],
-            line[7] == "y",
-            line[8],
-            len(line[9]) == 0,
+        name, cargo_type, fame, special_text, kind, additional_rule, tradable = (
+            extract_line_data(line, False)
         )
 
         try:
-            fg = Image.open(f"assets/gifts/{name}.png").convert("RGBA")
-            fg.thumbnail((700, 700))
+            # we don't know if the format will be a png or a tif or what, so we have to search the unused art
+            best_match = name
+            stem = clean_raw_name(name)
+            for art in unused_art:
+                # print(stem, clean_raw_name(art))
+                if stem in clean_raw_name(art):
+                    best_match = art
+                    break
+
+            unused_art.discard(best_match)
+
+            # print(f"Found {best_match} in unused art")
+            fg = Image.open(f"assets/gifts/{best_match}").convert("RGBA")
         except FileNotFoundError:
             print(missing_art_error(name))
-            return
+            fg = assets["none"].copy()
 
-        ring = determine_ring(kind, weight, assets)
+        fg.thumbnail((800, 800))
+        ring = determine_ring(kind, cargo_type, assets)
         fg = process_image_transparency(fg)
         center = ((ring.width - fg.width) // 2, (ring.height - fg.height) // 2)
 
@@ -133,15 +164,6 @@ def process_gift_entry(line, assets, save_path, unused_art):
                     (ring.height - assets["notrade"].height) // 2,
                 ),
                 assets["notrade"],
-            )
-        if stackable:
-            ring.paste(
-                assets["stack"],
-                (
-                    (ring.width - assets["stack"].width) // 2,
-                    (ring.height - assets["stack"].height) // 2,
-                ),
-                assets["stack"],
             )
 
         ring.paste(fg, center, fg)
@@ -155,6 +177,14 @@ def process_gift_entry(line, assets, save_path, unused_art):
 
         if special_text:
             process_special_text(draw, assets["font"], name, special_text, ring)
+
+        # print(f"Name: {name}")
+        # print(f"Special Text: {special_text}")
+        # print(f"Kind: {kind}")
+        # print(f"Weight: {cargo_type}")
+        # print(f"Fame: {fame}")
+        # print(f"Additional Rule: {additional_rule}")
+        # print(f"Tradable: {tradable}")
 
         bg = assets["background"].copy()
         bg.paste(ring, (0, 0), ring)
@@ -181,10 +211,9 @@ def compile_all(clean: bool = True):
         next(reader)  # Skip header
 
         for line in reader:
-            if "EOF" in line:
+            if "EOF" in line or len(line) == 0:
                 print("Done. Remaining Art:")
                 for name in unused_art:
                     print(name)
                 return
             process_gift_entry(line, assets, save_path, unused_art)
-

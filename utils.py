@@ -66,7 +66,7 @@ def clean_raw_name(val):
         .replace("_", "")
         .replace("'", "")
         .replace("-", "")
-    )
+    ).split(".")[0]
 
 
 def textsize(text, font):
@@ -143,7 +143,6 @@ def list_art_files(path):
         full_path = os.path.join(path, f)
 
         if os.path.isfile(full_path) and f.lower().endswith(valid_extensions):
-            name, _ = os.path.splitext(f)
-            final.add(clean_raw_name(name).upper())
+            final.add(f)
 
     return final
