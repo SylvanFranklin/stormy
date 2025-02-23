@@ -1,0 +1,22 @@
+[project]
+name = "stormy"
+version = "0.1.0"
+description = "stormy seas board game"
+authors = [{ name = "SylvanFranklin", email = "sylvanfranklin@icloud.com" }]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["pillow (>=11.1.0,<12.0.0)", "requests (>=2.32.3,<3.0.0)"]
+
+[tool.poetry]
+packages = [{ include = "stormy", from = "src" }]
+scripts = { "stormy" = "stormy.init:main" }
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project.scripts]
