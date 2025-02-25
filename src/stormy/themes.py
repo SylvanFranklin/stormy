@@ -121,8 +121,8 @@ def compile_all():
                     font=title_font,
                 )
 
-                # get the width of a single character of the font, so that we can find the proper width
 
+                # TODO stop using wrap and use the multiline text function
                 body_para = wrap(text, margins, bg.width, body_font)
                 for line in body_para:
                     # what we want to do now, is go word by word, and insert insert the padding between each, so that they are flush with the sides of the card

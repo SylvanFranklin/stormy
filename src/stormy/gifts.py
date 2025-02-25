@@ -102,15 +102,11 @@ def process_image_transparency(image):
 
 def process_special_text(draw, font, name, special_text, ring):
     """Handle special text placement on the ring."""
-    # special_text_offset = {
-    #     "GOAT": (0, -120),
-    #     "CEDAR": (-50, -150),
-    #     "AXE": (0, 50),
-    #     "FRUITS": (150, -200),
-    #     "ROPE": (150, 0),
-    #     "NEPENTHE": (150, -200),
-    #     "THORAX": (-30, 0),
-    # }
+    special_text_offset = {
+        "GOAT": (100, -250),
+        "AXE": (100, 200),
+        "NEPENTHE": (0, -120),
+    }
 
     center_title = False
     if "^" in special_text:
@@ -120,12 +116,11 @@ def process_special_text(draw, font, name, special_text, ring):
     if "\\n" in special_text:
         special_text = special_text.replace("\\n", "\n")
 
-    offset_pair = (0, 0)
     margins = 400
-    # offset_pair = special_text_offset.get(name.upper(), (0, 0))
+    offset_pair = special_text_offset.get(name.upper(), (0, 0))
     if center_title:
         draw.multiline_text(
-            (ring.width // 2, 200 + offset_pair[1]),
+            (ring.width // 2, 300 + offset_pair[1]),
             special_text,
             (245, 98, 81),
             font=font,
@@ -196,7 +191,6 @@ def process_gift_entry(line, assets, save_path, unused_art):
                     break
 
             unused_art.discard(best_match)
-
             # print(f"Found {best_match} in unused art")
             fg = Image.open(f"assets/gifts/{best_match}").convert("RGBA")
         except FileNotFoundError:
@@ -207,14 +201,9 @@ def process_gift_entry(line, assets, save_path, unused_art):
         ring = determine_ring(kind, cargo_type, assets)
         # orb = assets["fameorb"].copy()
 
-        double = True
-        if "n" in kind and cargo_type != "p" or cargo_type != "r":
-            double = False
-
         fg = process_image_transparency(fg)
         center = ((ring.width - fg.width) // 2, (ring.height - fg.height) // 2)
 
-        # TODO - center this properely
         if not tradable:
             ring.paste(
                 assets["notrade"],
@@ -226,12 +215,17 @@ def process_gift_entry(line, assets, save_path, unused_art):
             )
 
         ring.paste(fg, center, fg)
+        double = True
+        if "n" in kind and cargo_type != "p":
+            double = False
+
         draw = ImageDraw.Draw(ring)
         draw.text(
-            (ring.width // 2, ring.height - 200 - (70 if double else 0)),
+            (ring.width // 2, (ring.height - 150) - (50 if double else 0)),
             fame + "*" if additional_rule else fame,
             (0, 0, 0),
             font=assets["font"],
+            anchor="mm",
         )
         # ring.paste(
         #     orb, ((ring.width - orb.width) // 2, ring.height - orb.height - 100), orb
@@ -274,12 +268,11 @@ def compile_all(clean: bool = True, open_output: bool = True):
     unused_art = list_art_files("assets/gifts/")
     with open("raw_spreadsheet_data/gifts.csv") as file:
         reader = csv.reader(file)
-        next(reader)  # Skip header
+        next(reader)
 
         for line in reader:
             if "EOF" in line or len(line) == 0:
                 print("Done. Remaining Art:")
-
                 for name in unused_art:
                     print(name)
                 return

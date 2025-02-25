@@ -10,8 +10,9 @@ dependencies = ["pillow (>=11.1.0,<12.0.0)", "requests (>=2.32.3,<3.0.0)"]
 [tool.poetry]
 packages = [{ include = "stormy", from = "src" }]
 
-# TODO, make scripts that are better than the current cli  
-scripts = {"stormy" = "stormy.init:main"}
+[project.scripts]
+stormy = 'stormy.init:main'
+dl = 'stormy.init:download_sheets'
 
 [tool.pyright]
 venvPath = "."
@@ -21,4 +22,3 @@ venv = ".venv"
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[project.scripts]

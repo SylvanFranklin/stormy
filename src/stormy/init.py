@@ -1,18 +1,20 @@
+def download_sheets():
+    import stormy.utils as utils
+    for i in ["voyage", "hospitality", "gifts", "themes", "new themes"]:
+        utils.download_csv_file(i)
+
+
 def main():
     import sys
     import stormy.gifts as gifts
     import stormy.voyage as voyage
-    import stormy.utils as utils
     import stormy.themes as themes
     import stormy.hospitality as hospitality
     from stormy.page import layout_pages
 
     args = sys.argv[1:]
     if "dl" in args:
-        print("Downloading files...")
-        for i in ["voyage", "hospitality", "gifts", "themes", "new themes"]:
-            utils.download_csv_file(i)
-        print("Done")
+        download_sheets()
 
     if "compile" in args:
         print("Compiling files...")
