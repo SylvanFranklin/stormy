@@ -1,5 +1,6 @@
 def download_sheets():
     import stormy.utils as utils
+
     for i in ["voyage", "hospitality", "gifts", "themes", "new themes"]:
         utils.download_csv_file(i)
 
@@ -36,8 +37,8 @@ def main():
 
     if "pages" in args:
         layout_pages("gifts")
-        layout_pages("themes")
-        layout_pages("hospitality")
+        # layout_pages("themes")
+        # layout_pages("hospitality")
         layout_pages("voyage")
 
 

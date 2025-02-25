@@ -18,11 +18,24 @@ SEASON_COLORS = {
     "Autumn": "#7B2F20",
 }
 WIND_TABLES = {
-    "Winter": [8, 6, 6, 5, 0, 3, 6, 2, 2],
-    "Spring": [9, 5, 6, 4, 0, 3, 3, 2, 4],
-    "Summer": [16, 4, 2, 5, 0, 2, 5, 2, 2],
-    "Autumn": [11, 6, 6, 3, 0, 2, 3, 2, 3],
+    "Winter": [8, 6, 6, 5, 3, 3, 6, 2, 2],
+    "Spring": [9, 5, 6, 4, 4, 3, 3, 2, 4],
+    "Summer": [16, 4, 2, 5, 3, 2, 5, 2, 2],
+    "Autumn": [11, 6, 6, 3, 4, 2, 3, 2, 3],
 }
+
+
+def locations():
+    # return 1-3 random locations that don't repeat, in a string
+    loc = [
+        "Issikon Pelagos",
+        "Aigyption Pelagos",
+        "Pelagos Tyron",
+        "Lykion Pelagos",
+        "Libykon Pelagos",
+    ]
+
+    return "\n".join(random.sample(loc, random.randint(1, 3)))
 
 
 def generate_wind_table(season):
@@ -47,10 +60,6 @@ def load_assets():
     except Exception as e:
         print("Error loading assets:", e)
         return None, None, None, None, None, None
-
-
-def draw_text(draw, position, text, color, font):
-    draw.text(position, text, ImageColor.getcolor(color, "RGB"), anchor="mm", font=font)
 
 
 def process_voyage_data():
@@ -111,54 +120,59 @@ def process_voyage_data():
                 canvas.paste(local_arrow, local_arrow_pos, local_arrow)
                 draw = ImageDraw.Draw(canvas)
                 current_h = bg.width // 10
+                current_h += spacing
 
-                draw_text(
-                    draw,
+                draw.text(
                     (half_width, current_h),
                     season.upper(),
                     SEASON_COLORS[season],
-                    title_font,
+                    font=title_font,
+                    anchor="ms",
                 )
                 current_h += spacing * 2
-                draw_text(
-                    draw,
+                draw.text(
                     (half_width, current_h),
                     f"MOVEMENT POINTS: {mp}",
                     "black",
-                    body_font,
+                    font=body_font,
+                    anchor="ms",
                 )
-                # current_h += math.floor(spacing * 1.8)
+                current_h += spacing
+                draw.text(
+                    (half_width, current_h),
+                    f"STORM: {locations()}!",
+                    "black",
+                    font=body_font,
+                    anchor="ms",
+                )
+                # TODO - add this back in
                 # draw_text(
                 #     draw,
                 #     (half_width, current_h),
-                #     f"STORM: {storm_location}!",
+                #     f"DAMAGE: {storm_damage_ship} Ship | {storm_damage_crew} Crew",
                 #     "black",
                 #     body_font,
                 # )
-                current_h += spacing
-                draw_text(
-                    draw,
-                    (half_width, current_h),
-                    f"DAMAGE: {storm_damage_ship} Ship | {storm_damage_crew} Crew",
-                    "black",
-                    body_font,
-                )
-                current_h += spacing
-                draw_text(
-                    draw,
-                    (half_width, current_h),
-                    f"SWEPT TO: {swept_to_location}",
-                    "black",
-                    body_font,
-                )
+                # current_h += spacing
+                # draw_text(
+                #     draw,
+                #     (half_width, current_h),
+                #     f"SWEPT TO: {swept_to_location}",
+                #     "black",
+                #     body_font,
+                # )
 
                 for j, wind_val in enumerate(wind_vals):
                     if wind_val:
-                        draw_text(
-                            draw, circle_chords[j], str(wind_val), "black", body_font
+                        draw.text(
+                            circle_chords[j],
+                            str(wind_val),
+                            "black",
+                            font=body_font,
+                            anchor="mm",
                         )
 
-                filename = f"{SAVE_PATH}/{season.upper()}{i}.png"
+                filename = f"{SAVE_PATH}/{season.upper()}{i}.tiff"
                 canvas.save(filename)
                 canvas.thumbnail((825, 1125), Image.LANCZOS)
                 print(colors.GREEN + "Exported: " + colors.ENDC + filename)
@@ -167,6 +181,11 @@ def process_voyage_data():
                 print("Write error:", e)
 
 
-def compile_all():
-    clear_directory(SAVE_PATH)
+def compile_all(clean: bool = True, open_output: bool = True):
+    from os import system
+
+    if clean:
+        clear_directory(SAVE_PATH)
+    if open_output:
+        system(f"open {SAVE_PATH}")
     process_voyage_data()

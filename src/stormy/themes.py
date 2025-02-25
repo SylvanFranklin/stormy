@@ -1,5 +1,13 @@
-def compile_all():
+def compile_all(clean: bool = True, open_output: bool = True):
+    import stormy.utils as utils
+    import os
+
     save_path = "output/themes"
+    if clean:
+        utils.clear_directory(save_path)
+
+    if open_output:
+        os.system(f"open {save_path}")
 
     def custom_split(string):
         arr = []
@@ -49,7 +57,6 @@ def compile_all():
         except FileNotFoundError:
             print(colors.RED + "ERROR: Font or image not found." + colors.ENDC)
             return
-
         available_theme_art = os.listdir("assets/themes")
         available_theme_art.remove(".DS_Store")
         next(reader)
@@ -120,7 +127,6 @@ def compile_all():
                     (180, 64, 65),
                     font=title_font,
                 )
-
 
                 # TODO stop using wrap and use the multiline text function
                 body_para = wrap(text, margins, bg.width, body_font)

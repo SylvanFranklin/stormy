@@ -55,7 +55,7 @@ def layout_pages(card_set):
         )
         for card_name in cards:
             try:
-                card = Image.open(f"{art_path}/{card_name}.png").convert("RGBA")
+                card = Image.open(f"{art_path}/{card_name}.tiff").convert("RGBA")
 
                 # print(f"Found {art_path}/{card_name}.png")
             except FileNotFoundError:

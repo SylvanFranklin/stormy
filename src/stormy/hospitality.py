@@ -1,4 +1,7 @@
-def compile_all():
+from stormy.utils import clear_directory
+
+
+def compile_all(clean: bool = True, open_output: bool = True):
     from PIL import Image, ImageDraw
     from stormy.utils import (
         end,
@@ -18,6 +21,13 @@ def compile_all():
 
     if not os.path.exists(save_path):
         os.makedirs(save_path)
+
+    if clean:
+        clear_directory(save_path)
+            
+    if open_output:
+        os.system(f"open {save_path}")
+
 
     image_size = (400, 600)
 
