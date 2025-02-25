@@ -57,7 +57,9 @@ def compile_all():
             try:
                 bg = Image.open("assets/bg/theme.png").convert("RGBA")
                 title = clean_raw_name(line[0])
-                print(title)
+                if title == "EOF":
+                    print("reached, end of file")
+                    break
                 text, cost, oracle_cost, flavor = (
                     line[2].join(["\n", "\n"]),
                     line[3] if line[3] else "0",
@@ -226,8 +228,8 @@ def compile_all():
                     bg,
                 )
 
-                Template.save(f"{save_path}/{clean_raw_name(title)}.png")
-                print(colors.GREEN + "Exported: " + colors.ENDC + f"{title}.png")
+                Template.save(f"{save_path}/{clean_raw_name(title)}.tiff")
+                print(colors.GREEN + "Exported: " + colors.ENDC + f"{title}.tiff")
             # catch everything and print the error
             except Exception as e:
                 print(colors.RED + f"Export failed, {e}" + colors.ENDC + title)

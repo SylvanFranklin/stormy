@@ -9,7 +9,9 @@ dependencies = ["pillow (>=11.1.0,<12.0.0)", "requests (>=2.32.3,<3.0.0)"]
 
 [tool.poetry]
 packages = [{ include = "stormy", from = "src" }]
-scripts = { "stormy" = "stormy.init:main" }
+
+# TODO, make scripts that are better than the current cli  
+scripts = {"stormy" = "stormy.init:main"}
 
 [tool.pyright]
 venvPath = "."

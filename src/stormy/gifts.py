@@ -1,6 +1,5 @@
 from stormy.utils import (
     list_art_files,
-    center_text,
     clean_raw_name,
     clear_directory,
     colors,
@@ -13,13 +12,13 @@ import os
 
 
 def load_assets():
-    """Load necessary image assets and return as a dictionary."""
     try:
         print("Loading assets...")
         path = "assets/components"
         assets = {
-            "font": ImageFont.truetype("assets/regular.ttf", 80),
+            "font": ImageFont.truetype("assets/regular.ttf", 120),
             "background": Image.open(f"{path}/bg.png").convert("RGBA"),
+            "fameorb": Image.open(f"{path}/fame.png").convert("RGBA"),
             "weapon": Image.open(f"{path}/weapon.png").convert("RGBA"),
             "armor": Image.open(f"{path}/armor.png").convert("RGBA"),
             "ranged": Image.open(f"{path}/ranged.png").convert("RGBA"),
@@ -40,7 +39,38 @@ def load_assets():
 
 
 def determine_ring(kind, weight, assets):
-    if "w" in kind:
+    # multiple type cases
+    if "w" in kind and "r" in kind:
+        # split vertically and combine half and half while preserving transparency
+        w = assets["weapon"].copy()
+        r = assets["ranged"].copy()
+        half = w.width // 2
+        # determine which comes first in the string
+        if kind.index("w") < kind.index("r"):
+            w_half = w.crop((0, 0, half, w.height))
+            r.paste(w_half, (0, 0), w_half)
+            return r
+        else:
+            r_half = r.crop((half, 0, r.width, r.height))
+            w.paste(r_half, (half, 0), r_half)
+            return w
+
+    elif "w" in kind and "a" in kind:
+        # split horizontally and combine half and half while preserving transparency
+        w = assets["weapon"].copy()
+        a = assets["armor"].copy()
+        half = w.height // 2
+        # determine which comes first in the string
+        if kind.index("w") < kind.index("a"):
+            w_half = w.crop((0, 0, w.width, half))
+            a.paste(w_half, (0, 0), w_half)
+            return a
+        else:
+            a_half = a.crop((0, half, a.width, a.height))
+            w.paste(a_half, (0, half), a_half)
+            return w
+
+    elif "w" in kind:
         return assets["weapon"].copy()
     elif "a" in kind:
         return assets["armor"].copy()
@@ -72,35 +102,57 @@ def process_image_transparency(image):
 
 def process_special_text(draw, font, name, special_text, ring):
     """Handle special text placement on the ring."""
-    special_text_offset = {
-        "GOAT": (0, -120),
-        "CEDAR": (-50, -150),
-        "AXE": (0, 50),
-        "FRUITS": (150, -200),
-        "ROPE": (150, 0),
-        "NEPENTHE": (150, -200),
-        "THORAX": (-30, 0),
-    }
-    offset_pair = special_text_offset.get(name.upper(), (0, 0))
-    left, right = (special_text.split("|") + [""])[:2]
-    draw.text(
-        (
-            (ring.width // 2) + 130 + offset_pair[0],
-            (ring.height // 2) - (textsize(right, font)[1] // 2) + offset_pair[1],
-        ),
-        right,
-        (245, 98, 81),
-        font=font,
-    )
-    draw.text(
-        (
-            (ring.width // 2) - 250 + offset_pair[0],
-            (ring.height // 2) - (textsize(left, font)[1] // 2) + offset_pair[1],
-        ),
-        left,
-        (245, 98, 81),
-        font=font,
-    )
+    # special_text_offset = {
+    #     "GOAT": (0, -120),
+    #     "CEDAR": (-50, -150),
+    #     "AXE": (0, 50),
+    #     "FRUITS": (150, -200),
+    #     "ROPE": (150, 0),
+    #     "NEPENTHE": (150, -200),
+    #     "THORAX": (-30, 0),
+    # }
+
+    center_title = False
+    if "^" in special_text:
+        center_title = True
+        special_text = special_text.replace("^", "")
+
+    if "\\n" in special_text:
+        special_text = special_text.replace("\\n", "\n")
+
+    offset_pair = (0, 0)
+    margins = 400
+    # offset_pair = special_text_offset.get(name.upper(), (0, 0))
+    if center_title:
+        draw.multiline_text(
+            (ring.width // 2, 200 + offset_pair[1]),
+            special_text,
+            (245, 98, 81),
+            font=font,
+            anchor="mm",
+        )
+    else:
+        left, right = (special_text.split("|") + [""])[:2]
+        draw.multiline_text(
+            (
+                (ring.width // 2) + margins + offset_pair[0],
+                (ring.height // 2) + offset_pair[1],
+            ),
+            right,
+            (245, 98, 81),
+            font=font,
+            anchor="mm",
+        )
+        draw.multiline_text(
+            (
+                (ring.width // 2) - margins + offset_pair[0],
+                (ring.height // 2) + offset_pair[1],
+            ),
+            left,
+            (245, 98, 81),
+            font=font,
+            anchor="mm",
+        )
 
 
 def extract_line_data(line, debug=False):
@@ -153,9 +205,16 @@ def process_gift_entry(line, assets, save_path, unused_art):
 
         fg.thumbnail((800, 800))
         ring = determine_ring(kind, cargo_type, assets)
+        # orb = assets["fameorb"].copy()
+
+        double = True
+        if "n" in kind and cargo_type != "p" or cargo_type != "r":
+            double = False
+
         fg = process_image_transparency(fg)
         center = ((ring.width - fg.width) // 2, (ring.height - fg.height) // 2)
 
+        # TODO - center this properely
         if not tradable:
             ring.paste(
                 assets["notrade"],
@@ -169,11 +228,14 @@ def process_gift_entry(line, assets, save_path, unused_art):
         ring.paste(fg, center, fg)
         draw = ImageDraw.Draw(ring)
         draw.text(
-            (center_text(fame, ring.width, assets["font"]), ring.height - 160),
+            (ring.width // 2, ring.height - 200 - (70 if double else 0)),
             fame + "*" if additional_rule else fame,
             (0, 0, 0),
             font=assets["font"],
         )
+        # ring.paste(
+        #     orb, ((ring.width - orb.width) // 2, ring.height - orb.height - 100), orb
+        # )
 
         if special_text:
             process_special_text(draw, assets["font"], name, special_text, ring)
@@ -188,6 +250,7 @@ def process_gift_entry(line, assets, save_path, unused_art):
 
         bg = assets["background"].copy()
         bg.paste(ring, (0, 0), ring)
+        fg.close()
         final = bg.convert("CMYK")
         final.resize((450, 450))
         final.save(os.path.join(save_path, f"{name}.tiff"), dpi=(300, 300))
@@ -196,10 +259,13 @@ def process_gift_entry(line, assets, save_path, unused_art):
         print(colors.RED + f"ERROR processing {name}: {e}" + colors.ENDC)
 
 
-def compile_all(clean: bool = True):
+def compile_all(clean: bool = True, open_output: bool = True):
     save_path = "output/gifts"
     if clean:
         clear_directory(save_path)
+
+    if open_output:
+        os.system(f"open {save_path}")
 
     assets = load_assets()
     if not assets:
@@ -213,6 +279,7 @@ def compile_all(clean: bool = True):
         for line in reader:
             if "EOF" in line or len(line) == 0:
                 print("Done. Remaining Art:")
+
                 for name in unused_art:
                     print(name)
                 return
