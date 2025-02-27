@@ -1,80 +1,92 @@
 def layout_pages(card_set):
-    import os
     import csv
-    import math
+    from pathlib import Path
     from PIL import Image
     from stormy.utils import clean_raw_name, end, colors
 
-    art_path = f"output/{card_set}"
-    save_path = f"output/pages/{card_set}"
+    art_path = Path(f"output/{card_set}")
+    save_path = Path(f"output/pages/{card_set}")
 
-    if not os.path.exists(save_path):
-        os.makedirs(save_path, exist_ok=True)
-    else:
-        for file in os.listdir(save_path):
-            os.remove(f"{save_path}/{file}")
+    save_path.mkdir(parents=True, exist_ok=True)
+    if save_path.exists():
+        for file in save_path.glob("*"):
+            file.unlink()
 
-    with open(f"raw_spreadsheet_data/{card_set}.csv") as file:
-        # ensure that we have all the themes for print
-        period = 9 if card_set != "gifts" else 25
-        dpi = 300
-        # card_size = (int(2.5 * dpi), int(3.5 * dpi))
-        paper = Image.new("RGB", (9 * dpi, 11 * dpi), (255, 255, 255))
-        margin = 20
-        x, y, i = 0, 0, 0
-        cards = []
-        if card_set != "voyage":
+    card_configs = {
+        "gifts": {"period": 25, "cards_per_row": 5, "thumbnail_size": (450, 450)},
+        "default": {"period": 9, "cards_per_row": 3, "thumbnail_size": None},
+    }
+
+    config = card_configs.get(card_set, card_configs["default"])
+    period = config["period"]
+    cards_per_row = config["cards_per_row"]
+    thumbnail_size = config["thumbnail_size"]
+
+    dpi = 300
+    paper = Image.new("RGB", (9 * dpi, 11 * dpi), (255, 255, 255))
+    margin = 20
+    x, y, i = 0, 0, 0
+    cards = []
+
+    csv_path = Path(f"raw_spreadsheet_data/{card_set}.csv")
+    if card_set != "voyage":
+        with csv_path.open() as file:
             reader = csv.reader(file)
             next(reader)
             for line in reader:
                 if end(line):
                     break
-
                 name = clean_raw_name(line[0])
-                occurrence = line[1]
-                if occurrence == "":
-                    occurrence = 1
+                occurrence = int(line[1]) if line[1] else 1
 
-                for _ in range(int(occurrence)):
+                for _ in range(occurrence):
                     cards.append(name)
-        else:
-            art_list = os.listdir(art_path)
-            for art in art_list:
-                cards.append(art.split(".")[0])
+    else:
+        for art_file in art_path.glob("*"):
+            if art_file.name != ".DS_Store":
+                cards.append(art_file.stem)
 
-            if ".DS_Store" in cards:
-                cards.remove(".DS_Store")
+        # Sort seasons in proper order
+        cards.sort(key=lambda x: (x[-6:], x[:-6]))
 
-            # we want to sort the cards array based on alphabetical order, which gets messed up since
-            # the cards are named with numbers at the end, and there are only four word "WINTER" "SPRING" "SUMMER" "AUTUMN"
-            # so we want to sort in a way that the seasons are in order
-            cards.sort(key=lambda x: (x[-6:], x[:-6]))
+    print(
+        f"{colors.GREEN}Creating {card_set} pages | {colors.YELLOW} total cards: {len(cards)}{colors.ENDC}"
+    )
+    print(len(cards))
 
-        print(
-            f"{colors.GREEN}Creating {card_set} pages | {colors.YELLOW} total cards: {len(cards)}{colors.ENDC}"
+    for card_name in cards:
+        try:
+            card = Image.open(art_path / f"{card_name}.tiff").convert("RGBA")
+        except FileNotFoundError:
+            card = Image.open("assets/theme_card.tiff").convert("RGBA")
+            print(f"Missing {art_path}/{card_name}.png")
+
+        # Apply thumbnail if specified in config
+        if thumbnail_size:
+            card.thumbnail(thumbnail_size)
+
+        paper.paste(card, (x, y))
+        x += card.width + margin
+        i += 1
+
+        if i % cards_per_row == 0:
+            x = 0
+            y += card.height + margin
+
+        if i % period == 0:
+            x = 0
+            y = 0
+            paper.save(
+                save_path / f"page{card_set}{i // period}.pdf",
+                "PDF",
+                resolution=300.0,
+            )
+            paper = Image.new("RGB", (9 * dpi, 11 * dpi), (255, 255, 255))
+
+    # Save the remaining cards
+    if i % period != 0:
+        paper.save(
+            save_path / f"page{card_set}{i // period + 1}.pdf",
+            "PDF",
+            resolution=300.0,
         )
-        for card_name in cards:
-            try:
-                card = Image.open(f"{art_path}/{card_name}.tiff").convert("RGBA")
-
-                # print(f"Found {art_path}/{card_name}.png")
-            except FileNotFoundError:
-                card = Image.open("assets/theme_card.png").convert("RGBA")
-                print(f"Missing {art_path}/{card_name}.png")
-
-            # card.thumbnail(card_size, Image.LANCZOS) don't need since the cards are all the right size
-            paper.paste(card, (x, y))
-            x += card.width + margin
-            i += 1
-
-            if i % math.floor(math.sqrt(period)) == 0:
-                x = 0
-                y += card.height + margin
-
-            if i % period == 0:
-                x = 0
-                y = 0
-                paper.save(
-                    f"{save_path}/page{card_set}{i // period}.pdf", "PDF", resolution=300.0
-                )
-                paper = Image.new("RGB", (9 * dpi, 11 * dpi), (255, 255, 255))
