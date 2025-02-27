@@ -9,6 +9,7 @@ def main():
     import sys
     import stormy.gifts as gifts
     import stormy.voyage as voyage
+    import stormy.tokens as tokens
     import stormy.themes as themes
     import stormy.hospitality as hospitality
     from stormy.page import layout_pages
@@ -28,6 +29,8 @@ def main():
             hospitality.compile_all()
         if "voyage" in args:
             voyage.compile_all()
+        if "tokens" in args:
+            tokens.compile_all()
 
         if len(args) == 1:
             gifts.compile_all()
@@ -36,10 +39,10 @@ def main():
             voyage.compile_all()
 
     if "pages" in args:
+        layout_pages("voyage")
         layout_pages("gifts")
         # layout_pages("themes")
         # layout_pages("hospitality")
-        layout_pages("voyage")
 
 
 if __name__ == "__main__":
