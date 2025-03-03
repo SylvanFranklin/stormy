@@ -4,7 +4,6 @@ from stormy.utils import (
     clear_directory,
     colors,
     missing_art_error,
-    textsize,
 )
 import csv
 from PIL import Image, ImageDraw, ImageFont
