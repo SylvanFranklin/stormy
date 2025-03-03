@@ -109,8 +109,11 @@ def load_assets():
 
 
 def is_end_of_file(line):
-    """Check if we've reached the end of the data file."""
-    return not line or all(cell.strip() == "" for cell in line)
+    return (
+        not line
+        or all(cell.strip() == "" for cell in line)
+        or (line and line[0].strip() == "EOF")
+    )
 
 
 def get_random_arrow_set():
@@ -299,4 +302,3 @@ def compile_all(clean=True, open_output=True):
 
 if __name__ == "__main__":
     compile_all()
-
