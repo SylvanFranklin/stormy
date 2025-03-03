@@ -11,8 +11,7 @@ dependencies = ["pillow (>=11.1.0,<12.0.0)", "requests (>=2.32.3,<3.0.0)"]
 packages = [{ include = "stormy", from = "src" }]
 
 [project.scripts]
-stormy = 'stormy.init:main'
-dl = 'stormy.init:download_sheets'
+cli = 'stormy.__init__:cli'
 
 [tool.pyright]
 venvPath = "."
