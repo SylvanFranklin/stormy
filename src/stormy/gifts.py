@@ -30,10 +30,10 @@ def load_assets():
             "light": Image.open(f"{path}/light.png").convert("RGBA"),
             "none": Image.open("assets/gifts/NONE.tif").convert("RGBA"),
         }
-        print(colors.GREEN + "Assets loaded successfully." + colors.ENDC)
+        print(colors.GREEN + "Assets loaded successfully." + colors.RESET)
         return assets
     except FileNotFoundError as e:
-        print(colors.RED + f"ERROR: {e}" + colors.ENDC)
+        print(colors.RED + f"ERROR: {e}" + colors.RESET)
         return None
 
 
@@ -247,9 +247,9 @@ def process_gift_entry(line, assets, save_path, unused_art):
         final = bg.convert("CMYK")
         final.resize((450, 450))
         final.save(os.path.join(save_path, f"{name}.tiff"), dpi=(300, 300))
-        print(colors.GREEN + f"EXPORTED: {name}.tiff" + colors.ENDC)
+        print(colors.GREEN + f"EXPORTED: {name}.tiff" + colors.RESET)
     except Exception as e:
-        print(colors.RED + f"ERROR processing {name}: {e}" + colors.ENDC)
+        print(colors.RED + f"ERROR processing {name}: {e}" + colors.RESET)
 
 
 def compile_all(clean: bool = True, open_output: bool = True):

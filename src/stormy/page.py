@@ -50,7 +50,7 @@ def layout_pages(card_set):
         cards.sort(key=lambda x: (x[-6:], x[:-6]))
 
     print(
-        f"{colors.GREEN}Creating {card_set} pages | {colors.YELLOW} total cards: {len(cards)}{colors.ENDC}"
+        f"{colors.GREEN}Creating {card_set} pages | {colors.YELLOW} total cards: {len(cards)}{colors.RESET}"
     )
     print(len(cards))
 
