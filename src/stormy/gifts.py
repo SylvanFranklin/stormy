@@ -276,3 +276,4 @@ def compile_all(clean: bool = True, open_output: bool = True):
                     print(name)
                 return
             process_gift_entry(line, assets, save_path, unused_art)
+

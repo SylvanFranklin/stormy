@@ -34,7 +34,7 @@ def layout_pages(card_set):
             reader = csv.reader(file)
             next(reader)
             for line in reader:
-                if end(line):
+                if (line):
                     break
                 name = clean_raw_name(line[0])
                 occurrence = int(line[1]) if line[1] else 1

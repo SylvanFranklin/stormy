@@ -45,7 +45,7 @@ def compile_all(clean: bool = True, open_output: bool = True):
     )
 
     with open("raw_spreadsheet_data/new themes.csv") as file:
-        print(colors.BLUE + "Reading themes file" + colors.ENDC + "...")
+        print(colors.BLUE + "Reading themes file" + colors.RESET + "...")
         reader = csv.reader(file, skipinitialspace=True)
         image_size = (390, 600 - 15)
 
@@ -55,7 +55,7 @@ def compile_all(clean: bool = True, open_output: bool = True):
             oracle_cost_circle = Image.open("assets/oracle_cost.png").convert("RGBA")
             cost_circle = Image.open("assets/cost.png").convert("RGBA")
         except FileNotFoundError:
-            print(colors.RED + "ERROR: Font or image not found." + colors.ENDC)
+            print(colors.RED + "ERROR: Font or image not found." + colors.RESET)
             return
         available_theme_art = os.listdir("assets/themes")
         available_theme_art.remove(".DS_Store")
@@ -91,7 +91,7 @@ def compile_all(clean: bool = True, open_output: bool = True):
 
                 # resize foreground, and filter out brighter colors
 
-                fg.thumbnail(image_size, Image.LANCZOS)
+                fg.thumbnail(image_size, Image.Resampling.LANCZOS)
                 for x in range(fg.width):
                     for y in range(fg.height):
                         pixel = fg.getpixel((x, y))
@@ -235,7 +235,7 @@ def compile_all(clean: bool = True, open_output: bool = True):
                 )
 
                 Template.save(f"{save_path}/{clean_raw_name(title)}.tiff")
-                print(colors.GREEN + "Exported: " + colors.ENDC + f"{title}.tiff")
+                print(colors.GREEN + "Exported: " + colors.RESET + f"{title}.tiff")
             # catch everything and print the error
             except Exception as e:
-                print(colors.RED + f"Export failed, {e}" + colors.ENDC + title)
+                print(colors.RED + f"Export failed, {e}" + colors.RESET + title)

@@ -1,8 +1,10 @@
-import random
 import csv
-from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+import random
 from functools import lru_cache
+from pathlib import Path
+from stormy.utils import end
+
+from PIL import Image, ImageDraw, ImageFont
 
 # Constants
 SAVE_PATH = Path("output/voyage")
@@ -44,7 +46,6 @@ ASSETS = {
 SCALE_FACTOR = 1.15
 
 
-@lru_cache(maxsize=None)
 def get_random_locations():
     """Return 1-3 random non-repeating locations as a string."""
     num_locations = random.randint(1, 3)
@@ -108,14 +109,6 @@ def load_assets():
     return assets
 
 
-def is_end_of_file(line):
-    return (
-        not line
-        or all(cell.strip() == "" for cell in line)
-        or (line and line[0].strip() == "EOF")
-    )
-
-
 def get_random_arrow_set():
     """Randomly select arrow weight based on probability."""
     roll = random.randint(1, 16)
@@ -134,24 +127,18 @@ def scale_image(image, scale_factor):
 
     new_width = int(image.width * scale_factor)
     new_height = int(image.height * scale_factor)
-    return image.resize((new_width, new_height), Image.LANCZOS)
+    return image.resize((new_width, new_height), Image.Resampling.LANCZOS)
 
 
 def process_voyage_data():
     """Process CSV data and generate voyage cards."""
     # Create output directory if it doesn't exist
     SAVE_PATH.mkdir(parents=True, exist_ok=True)
-
-    # Load assets
     assets = load_assets()
     if not assets:
         return
-
-    # Pre-calculate positions and sizes
     half_width = assets["bg"].width // 2
     spacing = 48
-
-    # Pre-calculate circle positions on the wind table (original coordinates)
     base_circle_chords = [(50 + (j % 3) * 175, 50 + (j // 3) * 175) for j in range(9)]
 
     try:
@@ -161,7 +148,7 @@ def process_voyage_data():
             next(reader)  # Skip header
 
             for i, line in enumerate(reader, start=1):
-                if is_end_of_file(line):
+                if end(line):
                     print("END OF FILE")
                     break
 
