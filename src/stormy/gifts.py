@@ -9,6 +9,8 @@ import csv
 from PIL import Image, ImageDraw, ImageFont
 import os
 
+textless = True
+
 
 def load_assets():
     try:
@@ -219,18 +221,19 @@ def process_gift_entry(line, assets, save_path, unused_art):
             double = False
 
         draw = ImageDraw.Draw(ring)
-        draw.text(
-            (ring.width // 2, (ring.height - 150) - (50 if double else 0)),
-            fame + "*" if additional_rule else fame,
-            (0, 0, 0),
-            font=assets["font"],
-            anchor="mm",
-        )
+        if not textless:
+            draw.text(
+                (ring.width // 2, (ring.height - 150) - (50 if double else 0)),
+                fame + "*" if additional_rule else fame,
+                (0, 0, 0),
+                font=assets["font"],
+                anchor="mm",
+            )
         # ring.paste(
         #     orb, ((ring.width - orb.width) // 2, ring.height - orb.height - 100), orb
         # )
 
-        if special_text:
+        if special_text and not textless:
             process_special_text(draw, assets["font"], name, special_text, ring)
 
         # print(f"Name: {name}")
@@ -244,10 +247,10 @@ def process_gift_entry(line, assets, save_path, unused_art):
         bg = assets["background"].copy()
         bg.paste(ring, (0, 0), ring)
         fg.close()
-        final = bg.convert("CMYK")
+        final = bg.convert("RGBA")
         final.resize((450, 450))
-        final.save(os.path.join(save_path, f"{name}.tiff"), dpi=(300, 300))
-        print(colors.GREEN + f"EXPORTED: {name}.tiff" + colors.RESET)
+        final.save(os.path.join(save_path, f"{name}.png"), dpi=(300, 300))
+        print(colors.GREEN + f"EXPORTED: {name}.png" + colors.RESET)
     except Exception as e:
         print(colors.RED + f"ERROR processing {name}: {e}" + colors.RESET)
 
@@ -276,4 +279,3 @@ def compile_all(clean: bool = True, open_output: bool = True):
                     print(name)
                 return
             process_gift_entry(line, assets, save_path, unused_art)
-

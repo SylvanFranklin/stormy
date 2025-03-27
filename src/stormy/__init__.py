@@ -1,17 +1,18 @@
 import argparse
+
 import stormy.gifts as gifts
-import stormy.voyage as voyage
-import stormy.tokens as tokens
-import stormy.themes as themes
 import stormy.hospitality as hospitality
+import stormy.themes as themes
+import stormy.tokens as tokens
+import stormy.voyage as voyage
 from stormy.page import layout_pages
 
 
 def download_sheets():
-    import stormy.utils as utils
+    import stormy.download as download
 
     for i in ["voyage", "hospitality", "gifts", "themes", "new themes"]:
-        utils.download_csv_file(i)
+        download.download_csv_file(i)
 
 
 def compile_files(args):
@@ -35,6 +36,8 @@ def compile_files(args):
         voyage.compile_all()
     if "tokens" in args:
         tokens.compile_all()
+    if "dl" in args:
+        download_sheets()
 
 
 def generate_pages(args=None):
@@ -68,6 +71,8 @@ def parse_args():
     )
 
     pages_parser = subparsers.add_parser("pages", help="Generate pages")
+    subparsers.add_parser("dl", help="Download the files")
+
     pages_parser.add_argument(
         "types",
         nargs="*",

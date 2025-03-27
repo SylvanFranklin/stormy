@@ -49,6 +49,7 @@ title_font = ImageFont.truetype("assets/regular.ttf", 60)
 italic_flavor_font = ImageFont.truetype("assets/italic.ttf", 24)
 normal_flavor_font = ImageFont.truetype("assets/regular.ttf", 24)
 
+
 def missing_art_error(name):
     return (
         colors.RED
@@ -72,7 +73,11 @@ def clear_directory(directory_path):
 
     for entry in os.listdir(directory_path):
         entry_path = os.path.join(directory_path, entry)
-        if os.path.isfile(entry_path) or os.path.islink(entry_path):
+        if (
+            os.path.isfile(entry_path)
+            or os.path.islink(entry_path)
+            and not entry_path.endswith("typ")
+        ):
             os.unlink(entry_path)
         elif os.path.isdir(entry_path):
             shutil.rmtree(entry_path)
