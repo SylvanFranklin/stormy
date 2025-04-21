@@ -4,7 +4,10 @@ from stormy.utils import (
     clear_directory,
     colors,
     missing_art_error,
+    rmbg,
 )
+
+import math
 import csv
 from PIL import Image, ImageDraw, ImageFont
 import os
@@ -25,13 +28,25 @@ def load_assets():
             "ranged": Image.open(f"{path}/ranged.png").convert("RGBA"),
             "expert": Image.open(f"{path}/expert.png").convert("RGBA"),
             "notrade": Image.open(f"{path}/notrade.png").convert("RGBA"),
-            "pot": Image.open(f"{path}/pot.png").convert("RGBA"),
-            "raw": Image.open(f"{path}/raw.png").convert("RGBA"),
+            "pot": Image.open(f"{path}/heavy.png").convert("RGBA"),
+            "raw": Image.open(f"{path}/heavy.png").convert("RGBA"),
             "heavy": Image.open(f"{path}/heavy.png").convert("RGBA"),
             "medium": Image.open(f"{path}/medium.png").convert("RGBA"),
             "light": Image.open(f"{path}/light.png").convert("RGBA"),
             "none": Image.open("assets/gifts/NONE.tif").convert("RGBA"),
+            "icons": {
+                "light": Image.open("assets/icons/light.png").convert("RGBA"),
+                "medium": Image.open("assets/icons/medium.png").convert("RGBA"),
+                "heavy": Image.open("assets/icons/heavy.png").convert("RGBA"),
+                "wits": Image.open("assets/icons/wits.png").convert("RGBA"),
+                "charm": Image.open("assets/icons/charm.png").convert("RGBA"),
+                "might": Image.open("assets/icons/might.png").convert("RGBA"),
+            },
         }
+
+        for icon in assets["icons"]:
+            icon = rmbg(assets["icons"][icon])
+
         print(colors.GREEN + "Assets loaded successfully." + colors.RESET)
         return assets
     except FileNotFoundError as e:
@@ -39,14 +54,13 @@ def load_assets():
         return None
 
 
-def determine_ring(kind, weight, assets):
+def determine_ring(kind, weight, assets, ability):
     # multiple type cases
     if "w" in kind and "r" in kind:
         # split vertically and combine half and half while preserving transparency
         w = assets["weapon"].copy()
         r = assets["ranged"].copy()
         half = w.width // 2
-        # determine which comes first in the string
         if kind.index("w") < kind.index("r"):
             w_half = w.crop((0, 0, half, w.height))
             r.paste(w_half, (0, 0), w_half)
@@ -72,12 +86,15 @@ def determine_ring(kind, weight, assets):
             return w
 
     elif "w" in kind:
+        return assets["light"].copy()
         return assets["weapon"].copy()
     elif "a" in kind:
+        return assets["light"].copy()
         return assets["armor"].copy()
     elif "r" in kind:
+        return assets["light"].copy()
         return assets["ranged"].copy()
-    elif "x" in kind:
+    elif "x" in kind or ability:
         return assets["expert"].copy()
     elif "p" in weight:
         return assets["pot"].copy()
@@ -89,16 +106,6 @@ def determine_ring(kind, weight, assets):
         return assets["medium"].copy()
     else:
         return assets["light"].copy()
-
-
-def process_image_transparency(image):
-    """Make white pixels transparent in an image."""
-    for x in range(image.width):
-        for y in range(image.height):
-            r, g, b, _ = image.getpixel((x, y))
-            if r > 200 and g > 200 and b > 200:
-                image.putpixel((x, y), (255, 255, 255, 0))
-    return image
 
 
 def process_special_text(draw, font, name, special_text, ring):
@@ -153,13 +160,14 @@ def process_special_text(draw, font, name, special_text, ring):
 
 def extract_line_data(line, debug=False):
     name = clean_raw_name(line[0].upper().replace(" ", ""))
-    cargo_type, fame, special_text, kind, additional_rule, tradable = (
+    cargo_type, fame, special_text, kind, additional_rule, tradable, symbology = (
         line[2].lower(),  # Cargo Type
         line[3],  # Fame
         line[4][1:],  # Special Text
         line[5],  # Kind
         line[6],  # Additional Rule
         len(line[7]) == 0,  # Tradable
+        line[18],
     )
 
     if debug:
@@ -171,39 +179,51 @@ def extract_line_data(line, debug=False):
         print(f"Additional Rule: {additional_rule}")
         print(f"Tradable: {tradable}")
 
-    return name, cargo_type, fame, special_text, kind, additional_rule, tradable
+    return (
+        name,
+        cargo_type,
+        fame,
+        special_text,
+        kind,
+        additional_rule,
+        tradable,
+        symbology,
+    )
 
 
 def process_gift_entry(line, assets, save_path, unused_art):
     """Process a single line from the CSV file."""
     try:
-        name, cargo_type, fame, special_text, kind, additional_rule, tradable = (
-            extract_line_data(line, False)
-        )
+        (
+            name,
+            cargo_type,
+            fame,
+            special_text,
+            kind,
+            additional_rule,
+            tradable,
+            symbology,
+        ) = extract_line_data(line, False)
 
         try:
-            # we don't know if the format will be a png or a tif or what, so we have to search the unused art
             best_match = name
             stem = clean_raw_name(name)
             for art in unused_art:
-                # print(stem, clean_raw_name(art))
                 if stem == clean_raw_name(art):
                     best_match = art
                     break
 
             unused_art.discard(best_match)
-            # print(f"Found {best_match} in unused art")
             fg = Image.open(f"assets/gifts/{best_match}").convert("RGBA")
         except FileNotFoundError:
             print(missing_art_error(name))
-            fg = assets["none"].copy()
+            fg = assets["none"].copy().convert("RGBA")
 
         fg.thumbnail((800, 800))
-        ring = determine_ring(kind, cargo_type, assets)
-        # orb = assets["fameorb"].copy()
-
-        fg = process_image_transparency(fg)
-        center = ((ring.width - fg.width) // 2, (ring.height - fg.height) // 2)
+        ring = determine_ring(kind, cargo_type, assets, len(special_text) != 0)
+        bg = assets["background"].copy()
+        fg = rmbg(fg)
+        center = ((bg.width - fg.width) // 2, (bg.height - fg.height) // 2)
 
         if not tradable:
             ring.paste(
@@ -215,7 +235,7 @@ def process_gift_entry(line, assets, save_path, unused_art):
                 assets["notrade"],
             )
 
-        ring.paste(fg, center, fg)
+        bg.paste(fg, center, fg)
         double = True
         if "n" in kind and cargo_type != "p":
             double = False
@@ -234,7 +254,26 @@ def process_gift_entry(line, assets, save_path, unused_art):
         # )
 
         if special_text and not textless:
-            process_special_text(draw, assets["font"], name, special_text, ring)
+            process_special_text(
+                draw, assets["font"], name, special_text, ring)
+
+        icons = []
+        for s in symbology.lower():
+            match s:
+                case "b":
+                    icon = assets["icons"]["heavy"].copy()
+                case "m":
+                    icon = assets["icons"]["medium"].copy()
+                case "e":
+                    icon = assets["icons"]["light"].copy()
+                case "f":
+                    icon = assets["icons"]["might"].copy()
+                case "w":
+                    icon = assets["icons"]["wits"].copy()
+                case "h":
+                    icon = assets["icons"]["charm"].copy()
+
+            icons.append(icon)
 
         # print(f"Name: {name}")
         # print(f"Special Text: {special_text}")
@@ -244,13 +283,31 @@ def process_gift_entry(line, assets, save_path, unused_art):
         # print(f"Additional Rule: {additional_rule}")
         # print(f"Tradable: {tradable}")
 
-        bg = assets["background"].copy()
+        icon_size = 130
+        margin = 5.5
+        center = ((ring.width - icon_size) // 2,
+                  (ring.height - icon_size) // 2)
+        theta = (3 * math.pi / 2) - (math.pi / margin) * (len(icons) - 1) / 2
+        r = 0.38 * ring.height
+
+        for icon in icons:
+            icon.thumbnail((icon_size, icon_size))
+            x, y = int(r * math.cos(theta)), int(r * math.sin(theta))
+            theta += math.pi / margin
+            bg.paste(
+                icon,
+                (center[0] - x, center[1] - y),
+                icon,
+            )
+
         bg.paste(ring, (0, 0), ring)
+        ring.close()
         fg.close()
         final = bg.convert("RGBA")
         final.resize((450, 450))
         final.save(os.path.join(save_path, f"{name}.png"), dpi=(300, 300))
         print(colors.GREEN + f"EXPORTED: {name}.png" + colors.RESET)
+
     except Exception as e:
         print(colors.RED + f"ERROR processing {name}: {e}" + colors.RESET)
 

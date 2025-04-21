@@ -1,0 +1,19 @@
+## Rank
+
+## Trade connections
+[[Paphos]]
+[[Askalon]]
+[[Tyre]]
+[[Byblos]]
+[[Sidon]]
+[[ugarit]]
+[[House-of-Mopsos]]
+[[Ura]]
+[[Enkomi]]
+[[Kition]]
+[[Askalon]]
+[[Kourion]]
+
+
+
+

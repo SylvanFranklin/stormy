@@ -1,3 +1,214 @@
+#let ANY = "KEY"
+#let ALMONDS = "ALMONDS"
+#let AMPHORAONE = "AMPHORAONE"
+#let AMPHORATHREE = "AMPHORATHREE"
+#let AMPHORATWO = "AMPHORATWO"
+#let AXE = "AXE"
+#let BABOONS = "BABOONS"
+#let BEES = "BEES"
+#let BRACELET = "BRACELET"
+#let CANAANITEAMPHORA = "CANAANITEAMPHORA"
+#let CANAANITEAMPHORAALT = "CANAANITEAMPHORAALT"
+#let CANAANITEGOD = "CANAANITEGOD"
+#let CARNELIANBEADS = "CARNELIANBEADS"
+#let CAT = "CAT"
+#let CEDAR = "CEDAR"
+#let CHIEFHERALD = "CHIEFHERALD"
+#let CLOTH = "CLOTH"
+#let COMMONBOW = "COMMONBOW"
+#let COMMONSPEAR = "COMMONSPEAR"
+#let COMMONSWORD = "COMMONSWORD"
+#let COMMONTHORAX = "COMMONTHORAX"
+#let COPPERINGOT = "COPPERINGOT"
+#let DATES = "DATES"
+#let EARRINGS = "EARRINGS"
+#let EBONY = "EBONY"
+#let EXPERTHELMSMAN = "EXPERTHELMSMAN"
+#let FRUITS = "FRUITS"
+#let FUGITIVEDIVINER = "FUGITIVEDIVINER"
+#let GLASSINGOTS = "GLASSINGOTS"
+#let GOAT = "GOAT"
+#let GOLD = "GOLD"
+#let GOLDCHALICE = "GOLDCHALICE"
+#let GOLDRHYTON = "GOLDRHYTON"
+#let GREAVES = "GREAVES"
+#let HEALERHEADINGHOME = "HEALERHEADINGHOME"
+#let HELMET = "HELMET"
+#let IRONKNIFE = "IRONKNIFE"
+#let IVORYDUCK = "IVORYDUCK"
+#let IVORYRAW = "IVORYRAW"
+#let JEWELRY = "JEWELRY"
+#let LAPISLAZULICYLINDERSEAL = "LAPISLAZULICYLINDERSEAL"
+#let LEKYTHION = "LEKYTHION"
+#let LYRE = "LYRE"
+#let MASTERARCHER = "MASTERARCHER"
+#let MASTERNAVIGATOR = "MASTERNAVIGATOR"
+#let MUSICGIRLS = "MUSICGIRLS"
+#let MYCENEANJAR = "MYCENEANJAR"
+#let NECKLACE = "NECKLACE"
+#let NEPENTHE = "NEPENTHE"
+#let OARS = "OARS"
+#let OLIVEOIL = "OLIVEOIL"
+#let OSTRICHEGG = "OSTRICHEGG"
+#let POMEGRANITE = "POMEGRANITE"
+#let RATS = "RATS"
+#let RESIN = "RESIN"
+#let ROPE = "ROPE"
+#let SCALE = "SCALE"
+#let SCARABOFNEFERTITI = "SCARABOFNEFERTITI"
+#let SHIELDANDSPEAR = "SHIELDANDSPEAR"
+#let SILVERHILTEDSWORD = "SILVERHILTEDSWORD"
+#let SINGER = "SINGER"
+#let SLAVES = "SLAVES"
+#let SPICES = "SPICES"
+#let STAND = "STAND"
+#let STATUE = "STATUE"
+#let STONESCEPTER = "STONESCEPTER"
+#let SWORDS = "SWORDS"
+#let SYMOSIUMBOWL = "SYMOSIUMBOWL"
+#let TABLET = "TABLET"
+#let THORAX = "THORAX"
+#let TININGOT = "TININGOT"
+#let TORTOISESHELL = "TORTOISESHELL"
+#let TRIPODONE = "TRIPODONE"
+#let TRIPODTWO = "TRIPODTWO"
+#let UNCOMMONSPEAR = "UNCOMMONSPEAR"
+#let VESSELBLUE = "VESSELBLUE"
+#let VESSELBLUETWO = "VESSELBLUETWO"
+#let VESSELRED = "VESSELRED"
+#let VESSELSILVER = "VESSELSILVER"
+#let VESSELTALL = "VESSELTALL"
+#let WATER = "WATER"
+#let WHEAT = "WHEAT"
+
+#let pots = (
+  AMPHORAONE,
+  AMPHORATHREE,
+  AMPHORATWO,
+)
 
 
-#image("../gifts/AMPHORAONE.png")
+#let gifts = (
+  ANY,
+  ALMONDS,
+  AMPHORAONE,
+  AMPHORATHREE,
+  AMPHORATWO,
+  AXE,
+  BABOONS,
+  BEES,
+  BRACELET,
+  CANAANITEAMPHORA,
+  CANAANITEAMPHORAALT,
+  CANAANITEGOD,
+  CARNELIANBEADS,
+  CAT,
+  CEDAR,
+  CHIEFHERALD,
+  CLOTH,
+  COMMONBOW,
+  COMMONSPEAR,
+  COMMONSWORD,
+  COMMONTHORAX,
+  COPPERINGOT,
+  DATES,
+  EARRINGS,
+  EBONY,
+  EXPERTHELMSMAN,
+  FRUITS,
+  FUGITIVEDIVINER,
+  GLASSINGOTS,
+  GOAT,
+  GOLD,
+  GOLDCHALICE,
+  GOLDRHYTON,
+  GREAVES,
+  HEALERHEADINGHOME,
+  HELMET,
+  IRONKNIFE,
+  IVORYDUCK,
+  IVORYRAW,
+  JEWELRY,
+  LAPISLAZULICYLINDERSEAL,
+  LEKYTHION,
+  LYRE,
+  MASTERARCHER,
+  MASTERNAVIGATOR,
+  MUSICGIRLS,
+  MYCENEANJAR,
+  NECKLACE,
+  NEPENTHE,
+  OARS,
+  OLIVEOIL,
+  OSTRICHEGG,
+  POMEGRANITE,
+  RATS,
+  RESIN,
+  ROPE,
+  SCALE,
+  SCARABOFNEFERTITI,
+  SHIELDANDSPEAR,
+  SILVERHILTEDSWORD,
+  SINGER,
+  SLAVES,
+  SPICES,
+  STAND,
+  STATUE,
+  STONESCEPTER,
+  SWORDS,
+  SYMOSIUMBOWL,
+  TABLET,
+  THORAX,
+  TININGOT,
+  TORTOISESHELL,
+  TRIPODONE,
+  TRIPODTWO,
+  UNCOMMONSPEAR,
+  VESSELBLUE,
+  VESSELBLUETWO,
+  VESSELRED,
+  VESSELSILVER,
+  VESSELTALL,
+  WATER,
+  WHEAT,
+)
+
+#let key(parts) = {
+  show grid.cell: set align(horizon + center)
+  let cols = parts.map(part => image("gift-icons/" + part + ".png"))
+  grid(
+    stroke: 0pt, gutter: 2em, columns: parts.len() * 2,
+    ..cols
+      .map(it => {
+        grid.cell[#box(width: 4em)[= #it]]
+      })
+      .intersperse([=])
+  )
+}
+
+#let icon(it) = {
+  set text(16pt)
+  box(width: 9mm)[#it]
+}
+
+#let recipe(parts) = {
+  show grid.cell: set align(horizon + center)
+  let cols = parts.map(part => image("gift-icons/" + part + ".png"))
+  grid(
+    gutter: 4pt,
+    columns: parts.len() + 1,
+    ..cols.map(icon)
+  )
+}
+
+#key(gifts)
+
+
+#table(columns: 3)[Name][Score][Recipe][
+  Copper Monopoly][4][#recipe((COPPERINGOT, TININGOT))][
+  Famine][4][#recipe((WHEAT,))][
+  Copper Monopoly][4][#recipe((COPPERINGOT, TININGOT))]
+
+// = Stormy Seas
+// Diplomacy reference tables. All values here are subject to change, they provide some starting points for diplomacy "packages" which are small groups of gifts that when combined give you many more points than the individual values
+

@@ -18,6 +18,16 @@ def end(line):
     )
 
 
+# WARNING fails with TIFF files
+def rmbg(image):
+    for x in range(image.width):
+        for y in range(image.height):
+            r, g, b, _ = image.getpixel((x, y))
+            if r > 200 and g > 200 and b > 200:
+                image.putpixel((x, y), (255, 255, 255, 0))
+    return image
+
+
 class colors:
     RED = "\033[31m"
     RESET = "\033[m"
@@ -44,8 +54,8 @@ def textsize(text, font):
     return width, height
 
 
-body_font = ImageFont.truetype("assets/regular.ttf", 34)
-title_font = ImageFont.truetype("assets/regular.ttf", 60)
+body_font = ImageFont.truetype("assets/regular.ttf", 40)
+title_font = ImageFont.truetype("assets/regular.ttf", 66)
 italic_flavor_font = ImageFont.truetype("assets/italic.ttf", 24)
 normal_flavor_font = ImageFont.truetype("assets/regular.ttf", 24)
 

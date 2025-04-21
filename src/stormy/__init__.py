@@ -45,6 +45,7 @@ def generate_pages(args=None):
         layout_pages("voyage")
         layout_pages("gifts")
         layout_pages("themes")
+        layout_pages("newthemes")
         layout_pages("hospitality")
         return
 
@@ -56,6 +57,8 @@ def generate_pages(args=None):
         layout_pages("themes")
     if "hospitality" in args:
         layout_pages("hospitality")
+    if "newthemes" in args:
+        layout_pages("new themes")
 
 
 def parse_args():
@@ -65,7 +68,15 @@ def parse_args():
     compile_parser.add_argument(
         "types",
         nargs="*",
-        choices=["gifts", "themes", "hospitality", "voyage", "tokens", "all"],
+        choices=[
+            "gifts",
+            "themes",
+            "hospitality",
+            "voyage",
+            "tokens",
+            "all",
+            "newthemes",
+        ],
         default=["all"],
         help="Types to compile",
     )
@@ -76,7 +87,8 @@ def parse_args():
     pages_parser.add_argument(
         "types",
         nargs="*",
-        choices=["voyage", "gifts", "themes", "hospitality", "all"],
+        choices=["voyage", "gifts", "themes",
+                 "hospitality", "all", "newthemes"],
         default=["all"],
         help="Types of pages to generate",
     )

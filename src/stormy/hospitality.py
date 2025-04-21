@@ -13,6 +13,7 @@ def compile_all(clean: bool = True, open_output: bool = True):
         clean_raw_name,
         end,
         title_font,
+        rmbg
     )
 
     save_path = "output/hospitality"
@@ -24,6 +25,13 @@ def compile_all(clean: bool = True, open_output: bool = True):
         os.system(f"open {save_path}")
 
     bg = Image.open("assets/bg/hospitality.tif").convert("RGBA")
+    gifts_icon = Image.open("assets/themes/ABUNDANCE.png").convert("RGBA")
+    quest = Image.open("assets/themes/MASTERSHIPWORK.png").convert("RGBA")
+
+    quest = rmbg(quest)
+    gifts_icon = rmbg(gifts_icon)
+    gifts_icon.thumbnail((100, 100))
+    quest.thumbnail((400, 400))
 
     # get all the images names from assets/encounters
     with open("raw_spreadsheet_data/hospitality.csv") as file:
@@ -40,9 +48,16 @@ def compile_all(clean: bool = True, open_output: bool = True):
                 card_name = line[0].upper().replace(" ", "")
                 title = line[0].upper()
                 body_text = line[2]
+
+                # If we find the word rank then display the palace
+
+                gifts_raw = line[3].lower()
+
+                kind = line[4]
+
                 draw = ImageDraw.Draw(local_bg)
                 draw.text(
-                    (bg.width // 2, 200),
+                    (bg.width // 2, 120),
                     title,
                     "black",
                     font=title_font,
@@ -50,9 +65,31 @@ def compile_all(clean: bool = True, open_output: bool = True):
                     align="center",
                 )
 
-                # Wrap text to fit within a reasonable width
-                margin = 100  # Left and right margin
-                wrapped_text = textwrap.fill(body_text, width=40)
+                margin = 80  # Left and right margin
+                if kind.lower() == "quest":
+                    bg.paste(quest, ((bg.width - quest.width) // 2, 140), quest)
+
+                if "rank" in gifts_raw:
+                    # paste in the gifts_icon
+                    # then write the rest of the text
+                    text = gifts_raw.replace("rank", "")
+                    local_bg.paste(gifts_icon, (margin, 240), gifts_icon)
+                    draw.text((margin, 240), text, "black",
+                              font=body_font,
+                              # anchor="mm",
+                              align="left",
+                              spacing=5,
+                              )
+                else:
+                    draw.text((margin, 240), gifts_raw, "black",
+                              font=body_font,
+                              # anchor="mm",
+                              align="left",
+                              spacing=5,
+                              )
+                    pass
+
+                wrapped_text = textwrap.fill(body_text, width=36)
 
                 draw.multiline_text(
                     (margin, 300),  # Left-aligned positioning
@@ -71,4 +108,3 @@ def compile_all(clean: bool = True, open_output: bool = True):
             # catch everything and print the error
             except Exception as e:
                 compile_error(e)
-
