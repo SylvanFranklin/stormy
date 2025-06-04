@@ -1,5 +1,0 @@
-
-# Trade connections
-[[Kanopos]]
-[[Ura]]
-

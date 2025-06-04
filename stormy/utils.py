@@ -1,3 +1,4 @@
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import os
 
@@ -54,10 +55,14 @@ def textsize(text, font):
     return width, height
 
 
-body_font = ImageFont.truetype("assets/regular.ttf", 40)
-title_font = ImageFont.truetype("assets/regular.ttf", 66)
-italic_flavor_font = ImageFont.truetype("assets/italic.ttf", 24)
-normal_flavor_font = ImageFont.truetype("assets/regular.ttf", 24)
+FONT_DIR = Path(__file__).parent / "assets" / "fonts"
+
+body_font = ImageFont.truetype(FONT_DIR / "regular.ttf", 40)
+title_font = ImageFont.truetype(FONT_DIR / "regular.ttf", 66)
+
+# trying to make this italic compelety breaks everything for some reason
+italic_flavor_font = ImageFont.truetype(FONT_DIR / "regular.ttf", 24)
+normal_flavor_font = ImageFont.truetype(FONT_DIR / "regular.ttf", 24)
 
 
 def missing_art_error(name):

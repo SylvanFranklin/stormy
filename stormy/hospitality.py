@@ -25,15 +25,12 @@ def compile_all(clean: bool = True, open_output: bool = True):
         os.system(f"open {save_path}")
 
     bg = Image.open("assets/bg/hospitality.tif").convert("RGBA")
-    gifts_icon = Image.open("assets/themes/ABUNDANCE.png").convert("RGBA")
-    quest = Image.open("assets/themes/MASTERSHIPWORK.png").convert("RGBA")
-
-    quest = rmbg(quest)
+    gifts_icon = Image.open("assets/components/rank.tiff").convert("RGBA")
+    mission = Image.open("assets/themes/MASTERSHIPWORK.png").convert("RGBA")
+    mission = rmbg(mission)
     gifts_icon = rmbg(gifts_icon)
     gifts_icon.thumbnail((100, 100))
-    quest.thumbnail((400, 400))
-
-    # get all the images names from assets/encounters
+    mission.thumbnail((400, 400))
     with open("raw_spreadsheet_data/hospitality.csv") as file:
         print(colors.YELLOW + "Reading hospitality file" + colors.RESET + "...")
         reader = csv.reader(file, skipinitialspace=True)
@@ -48,40 +45,60 @@ def compile_all(clean: bool = True, open_output: bool = True):
                 card_name = line[0].upper().replace(" ", "")
                 title = line[0].upper()
                 body_text = line[2]
-
-                # If we find the word rank then display the palace
-
                 gifts_raw = line[3].lower()
+                kind = line[4].lower()
+                title_color = "black"
 
-                kind = line[4]
+                if "hostile" in kind:
+                    title_color = "#B74141"
+                elif "expert" in kind:
+                    title_color = "#E89C23"
+                elif "mission" in title_color:
+                    title_color = "#3E5365"
 
                 draw = ImageDraw.Draw(local_bg)
                 draw.text(
                     (bg.width // 2, 120),
                     title,
-                    "black",
+                    title_color,
                     font=title_font,
                     anchor="mm",
                     align="center",
                 )
 
-                margin = 80  # Left and right margin
-                if kind.lower() == "quest":
-                    bg.paste(quest, ((bg.width - quest.width) // 2, 140), quest)
+                margin = 80
+                offset = 0
+                if kind.lower() == "mission":
+                    offset += 300
+                    local_bg.paste(
+                        mission, ((bg.width - mission.width) // 2, 140), mission)
 
                 if "rank" in gifts_raw:
-                    # paste in the gifts_icon
-                    # then write the rest of the text
+
                     text = gifts_raw.replace("rank", "")
-                    local_bg.paste(gifts_icon, (margin, 240), gifts_icon)
-                    draw.text((margin, 240), text, "black",
+
+                    hoffset = 10
+
+                    draw.text((margin + hoffset, 250 + offset), "Draw gifts = ", "black",
+                              font=body_font,
+                              # anchor="mm",
+                              align="left",
+                              spacing=5,
+                              )
+
+                    hoffset += 280
+                    local_bg.paste(
+                        gifts_icon, (hoffset, 220 + offset), gifts_icon)
+
+                    hoffset += 60
+                    draw.text((hoffset, 250 + offset), text, "black",
                               font=body_font,
                               # anchor="mm",
                               align="left",
                               spacing=5,
                               )
                 else:
-                    draw.text((margin, 240), gifts_raw, "black",
+                    draw.text((margin, 250 + offset), f"Draw gifts = {gifts_raw}", "black",
                               font=body_font,
                               # anchor="mm",
                               align="left",
@@ -89,16 +106,15 @@ def compile_all(clean: bool = True, open_output: bool = True):
                               )
                     pass
 
-                wrapped_text = textwrap.fill(body_text, width=36)
-
+                wrapped_text = textwrap.fill(body_text, width=35)
                 draw.multiline_text(
-                    (margin, 300),  # Left-aligned positioning
+                    (margin, 330 + offset),
                     wrapped_text,
                     "black",
                     font=body_font,
                     # anchor="mm",
                     align="left",
-                    spacing=5,
+                    spacing=4,
                 )
 
                 local_bg.thumbnail((825, 1125), Image.Resampling.LANCZOS)

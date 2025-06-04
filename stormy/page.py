@@ -1,13 +1,14 @@
 from stormy.utils import end, list_art_files
 
+
 def layout_pages(card_set):
     import csv
     from pathlib import Path
     from PIL import Image
     from stormy.utils import clean_raw_name, colors
 
-    art_path = Path(f"output/voyage/")
-    save_path = Path(f"output/pages/{card_set}/")
+    art_path = Path("output/hospitality/")
+    save_path = Path("output/pages/hospitality/")
     save_path.mkdir(parents=True, exist_ok=True)
     if save_path.exists():
         for file in save_path.glob("*"):
@@ -26,7 +27,7 @@ def layout_pages(card_set):
     margin = 20
     x, y, i = 0, 0, 0
     cards = []
-    csv_path = Path(f"raw_spreadsheet_data/new themes.csv")
+    csv_path = Path(f"raw_spreadsheet_data/hospitality.csv")
     if card_set != "voyage":
         with csv_path.open() as file:
             reader = csv.reader(file)
@@ -54,7 +55,7 @@ def layout_pages(card_set):
 
     for card_name in cards:
         try:
-            card = Image.open(art_path / f"{card_name}").convert("RGBA")
+            card = Image.open(art_path / f"{card_name}.tiff").convert("RGBA")
         except FileNotFoundError:
             card = Image.open("assets/bg/theme.png").convert("RGBA")
             print(f"Missing {art_path}/{card_name}.tiff")

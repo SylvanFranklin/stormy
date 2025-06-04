@@ -1,5 +1,35 @@
 #import "utils.typ": *;
 
+= Winning
+
+Need ten fame
+#table(columns: 2)[
+  thing][fame][
+  Sack
+][
+  1
+][
+  Ally
+][
+  1
+][
+  Full ship of gifts
+][
+  3
+][
+  Real Helen
+][
+  5
+][
+  Non Helen Hottie
+][
+  3
+][
+  Visit all region
+][
+  3
+]
+
 = Dice base system
 Every Hero will start their turn by rolling five dice with the following faces:
 

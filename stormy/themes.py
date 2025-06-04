@@ -55,7 +55,7 @@ def compile_all(clean: bool = True, open_output: bool = True):
                 if kind.lower() == "economic":
                     color = "#E89C23"
                 elif kind.lower() == "voyage":
-                    color = "#78B8F8"
+                    color = "#3E5365"
                 elif kind.lower() == "divine":
                     color = (0, 0, 0)
                 else:
@@ -88,18 +88,26 @@ def compile_all(clean: bool = True, open_output: bool = True):
                 margin = 120
                 draw = ImageDraw.Draw(local_bg)
                 title = line[0].upper()
-                draw.text(
-                    (local_bg.width // 2, 120),
+
+                dumb = False
+                if "fair wind" in title.lower():
+                    dumb = True
+                    title = "FAIR WIND AND \n SMOOTH SEAS"
+
+                draw.multiline_text(
+                    (local_bg.width // 2, 160 if dumb else 120),
                     title,
                     color,
                     font=title_font,
-                    align="left",
+                    align="center",
+                    spacing=0,
                     anchor="mm",
                 )
 
                 fg.thumbnail(image_size, Image.Resampling.LANCZOS)
                 fg = rmbg(fg)
-                fg_position = ((local_bg.width - fg.width) // 2, (70 + margin))
+                fg_position = ((local_bg.width - fg.width) // 2,
+                               (70 + margin + (30 if dumb else 0)))
                 local_bg.paste(fg, fg_position, fg)
 
                 # divider_pos = (
@@ -109,11 +117,15 @@ def compile_all(clean: bool = True, open_output: bool = True):
                 #
                 # local_bg.paste(divider, divider_pos, divider)
 
+                extra = 0
+                if "shipwork" in title.lower() or "contributions" in title.lower():
+                    extra += 80
+
                 body = textwrap.fill(text[1:], width=35)
                 draw.multiline_text(
                     (
                         (local_bg.width) // 2,
-                        fg.height + fg_position[1] + 80,
+                        fg.height + fg_position[1] + 80 + extra,
                     ),
                     body,
                     "black",

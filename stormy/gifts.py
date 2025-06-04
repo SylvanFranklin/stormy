@@ -94,7 +94,7 @@ def determine_ring(kind, weight, assets, ability):
     elif "r" in kind:
         return assets["light"].copy()
         return assets["ranged"].copy()
-    elif "x" in kind or ability:
+    elif "x" in kind:
         return assets["expert"].copy()
     elif "p" in weight:
         return assets["pot"].copy()
@@ -219,7 +219,7 @@ def process_gift_entry(line, assets, save_path, unused_art):
             print(missing_art_error(name))
             fg = assets["none"].copy().convert("RGBA")
 
-        fg.thumbnail((800, 800))
+        fg.thumbnail((875, 875))
         ring = determine_ring(kind, cargo_type, assets, len(special_text) != 0)
         bg = assets["background"].copy()
         fg = rmbg(fg)
@@ -235,7 +235,7 @@ def process_gift_entry(line, assets, save_path, unused_art):
                 assets["notrade"],
             )
 
-        bg.paste(fg, center, fg)
+        bg.paste(fg, (center[0], center[1] - 100), fg)
         double = True
         if "n" in kind and cargo_type != "p":
             double = False
@@ -312,7 +312,7 @@ def process_gift_entry(line, assets, save_path, unused_art):
         print(colors.RED + f"ERROR processing {name}: {e}" + colors.RESET)
 
 
-def compile_all(clean: bool = True, open_output: bool = True):
+def compile_all(clean: bool = True, open_output: bool = False):
     save_path = "output/gifts"
     if clean:
         clear_directory(save_path)

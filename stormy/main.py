@@ -1,21 +1,22 @@
-import argparse
-
 import stormy.gifts as gifts
 import stormy.hospitality as hospitality
 import stormy.themes as themes
 import stormy.tokens as tokens
 import stormy.voyage as voyage
+import sys
 from stormy.page import layout_pages
 
 
 def download_sheets():
     import stormy.download as download
+    print('ran')
 
     for i in ["voyage", "hospitality", "gifts", "themes", "new themes"]:
         download.download_csv_file(i)
 
 
-def compile_files(args):
+def compile_files():
+    args = sys.argv[0]
     print("Compiling files...")
 
     if not args or "all" in args:
@@ -59,53 +60,3 @@ def generate_pages(args=None):
         layout_pages("hospitality")
     if "newthemes" in args:
         layout_pages("new themes")
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="Stormy CLI tool")
-    subparsers = parser.add_subparsers(dest="command", help="Command to run")
-    compile_parser = subparsers.add_parser("compile", help="Compile files")
-    compile_parser.add_argument(
-        "types",
-        nargs="*",
-        choices=[
-            "gifts",
-            "themes",
-            "hospitality",
-            "voyage",
-            "tokens",
-            "all",
-            "newthemes",
-        ],
-        default=["all"],
-        help="Types to compile",
-    )
-
-    pages_parser = subparsers.add_parser("pages", help="Generate pages")
-    subparsers.add_parser("dl", help="Download the files")
-
-    pages_parser.add_argument(
-        "types",
-        nargs="*",
-        choices=["voyage", "gifts", "themes",
-                 "hospitality", "all", "newthemes"],
-        default=["all"],
-        help="Types of pages to generate",
-    )
-
-    return parser.parse_args()
-
-
-def cli():
-    args = parse_args()
-
-    if args.command == "dl":
-        download_sheets()
-    elif args.command == "compile":
-        compile_files(args.types)
-    elif args.command == "pages":
-        generate_pages(args.types)
-
-
-if __name__ == "__main__":
-    cli()

@@ -71,3 +71,5 @@
 #player([Menelaus], [Placeholder], olive, [Bloodlust], recipe((charm, might)), [])
 #pagebreak()
 #player([Odysseus], [Crafty Leader], black, [Fient], recipe((might, wits)), [])
+#pagebreak()
+#player([Sam], [Some Guy], green, [Dissapear], recipe((might, might, might)), [])
