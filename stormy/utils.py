@@ -56,6 +56,7 @@ def textsize(text, font):
 
 
 FONT_DIR = Path(__file__).parent / "assets" / "fonts"
+ASSETS_DIR = Path(__file__).parent.parent / "assets"
 
 body_font = ImageFont.truetype(FONT_DIR / "regular.ttf", 40)
 title_font = ImageFont.truetype(FONT_DIR / "regular.ttf", 66)

@@ -3,7 +3,6 @@ import stormy.hospitality as hospitality
 import stormy.themes as themes
 import stormy.tokens as tokens
 import stormy.voyage as voyage
-import sys
 from stormy.page import layout_pages
 
 
@@ -16,10 +15,13 @@ def download_sheets():
 
 
 def compile_files():
-    args = sys.argv[0]
-    print("Compiling files...")
+    import argparse
+    parser = argparse.ArgumentParser(description='Compile assets')
+    parser.add_argument('which', type=str,
+                        help='the name of the target assets')
+    args = parser.parse_args()
 
-    if not args or "all" in args:
+    if not args.which or "all" in args:
         gifts.compile_all()
         themes.compile_all()
         hospitality.compile_all()
@@ -27,17 +29,17 @@ def compile_files():
         tokens.compile_all()
         return
 
-    if "gifts" in args:
+    if "gifts" in args.which:
         gifts.compile_all()
-    if "themes" in args:
+    if "themes" in args.which:
         themes.compile_all()
-    if "hospitality" in args:
+    if "hospitality" in args.which:
         hospitality.compile_all()
-    if "voyage" in args:
+    if "voyage" in args.which:
         voyage.compile_all()
-    if "tokens" in args:
+    if "tokens" in args.which:
         tokens.compile_all()
-    if "dl" in args:
+    if "dl" in args.which:
         download_sheets()
 
 

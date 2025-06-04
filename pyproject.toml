@@ -12,6 +12,7 @@ packages = [{ include = "stormy" }]
 
 [project.scripts]
 dl = 'stormy.main:download_sheets'
+compile = 'stormy.main:compile_files'
 
 [tool.pyright]
 venvPath = "."

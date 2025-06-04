@@ -5,6 +5,7 @@ from stormy.utils import (
     colors,
     missing_art_error,
     rmbg,
+    ASSETS_DIR
 )
 
 import math
@@ -12,13 +13,15 @@ import csv
 from PIL import Image, ImageDraw, ImageFont
 import os
 
+
 textless = True
 
 
 def load_assets():
     try:
         print("Loading assets...")
-        path = "assets/components"
+
+        path = ASSETS_DIR / "components"
         assets = {
             "font": ImageFont.truetype("assets/regular.ttf", 120),
             "background": Image.open(f"{path}/bg.png").convert("RGBA"),
@@ -33,7 +36,7 @@ def load_assets():
             "heavy": Image.open(f"{path}/heavy.png").convert("RGBA"),
             "medium": Image.open(f"{path}/medium.png").convert("RGBA"),
             "light": Image.open(f"{path}/light.png").convert("RGBA"),
-            "none": Image.open("assets/gifts/NONE.tif").convert("RGBA"),
+            # "none": Image.open(f"{path}/assets/NONE.png").convert("RGBA"),
             "icons": {
                 "light": Image.open("assets/icons/light.png").convert("RGBA"),
                 "medium": Image.open("assets/icons/medium.png").convert("RGBA"),
