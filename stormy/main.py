@@ -9,9 +9,15 @@ from stormy.page import layout_pages
 def download_sheets():
     import stormy.download as download
     print('ran')
-
     for i in ["voyage", "hospitality", "gifts", "themes", "new themes"]:
         download.download_csv_file(i)
+
+
+def open():
+    import argparse
+    parser = argparse.ArgumentParser(description='Compile assets')
+    parser.add_argument('which', type=str,
+                        help='the name of the target assets')
 
 
 def compile_files():

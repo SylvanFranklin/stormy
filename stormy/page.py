@@ -27,7 +27,7 @@ def layout_pages(card_set):
     margin = 20
     x, y, i = 0, 0, 0
     cards = []
-    csv_path = Path(f"raw_spreadsheet_data/hospitality.csv")
+    csv_path = Path("raw_spreadsheet_data/hospitality.csv")
     if card_set != "voyage":
         with csv_path.open() as file:
             reader = csv.reader(file)

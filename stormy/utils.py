@@ -55,8 +55,11 @@ def textsize(text, font):
     return width, height
 
 
-FONT_DIR = Path(__file__).parent / "assets" / "fonts"
-ASSETS_DIR = Path(__file__).parent.parent / "assets"
+ROOT_DIR = Path("/Users/sylvanfranklin/documents/projects/stormy")
+ASSETS_DIR = ROOT_DIR / "assets"
+OUTPUT_DIR = ROOT_DIR / "output"
+FONT_DIR = ROOT_DIR / "assets" / "fonts"
+
 
 body_font = ImageFont.truetype(FONT_DIR / "regular.ttf", 40)
 title_font = ImageFont.truetype(FONT_DIR / "regular.ttf", 66)

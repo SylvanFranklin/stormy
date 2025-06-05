@@ -5,6 +5,7 @@ from stormy.utils import (
     colors,
     missing_art_error,
     rmbg,
+    OUTPUT_DIR,
     ASSETS_DIR
 )
 
@@ -22,6 +23,8 @@ def load_assets():
         print("Loading assets...")
 
         path = ASSETS_DIR / "components"
+        iconpath = ASSETS_DIR / "icons"
+
         assets = {
             "font": ImageFont.truetype("assets/regular.ttf", 120),
             "background": Image.open(f"{path}/bg.png").convert("RGBA"),
@@ -38,12 +41,12 @@ def load_assets():
             "light": Image.open(f"{path}/light.png").convert("RGBA"),
             # "none": Image.open(f"{path}/assets/NONE.png").convert("RGBA"),
             "icons": {
-                "light": Image.open("assets/icons/light.png").convert("RGBA"),
-                "medium": Image.open("assets/icons/medium.png").convert("RGBA"),
-                "heavy": Image.open("assets/icons/heavy.png").convert("RGBA"),
-                "wits": Image.open("assets/icons/wits.png").convert("RGBA"),
-                "charm": Image.open("assets/icons/charm.png").convert("RGBA"),
-                "might": Image.open("assets/icons/might.png").convert("RGBA"),
+                "light": Image.open(f"{iconpath}/light.png").convert("RGBA"),
+                "medium": Image.open(f"{iconpath}/medium.png").convert("RGBA"),
+                "heavy": Image.open(f"{iconpath}/heavy.png").convert("RGBA"),
+                "wits": Image.open(f"{iconpath}/wits.png").convert("RGBA"),
+                "charm": Image.open(f"{iconpath}/charm.png").convert("RGBA"),
+                "might": Image.open(f"{iconpath}/might.png").convert("RGBA"),
             },
         }
 
@@ -165,6 +168,7 @@ def extract_line_data(line, debug=False):
     name = clean_raw_name(line[0].upper().replace(" ", ""))
     cargo_type, fame, special_text, kind, additional_rule, tradable, symbology = (
         line[2].lower(),  # Cargo Type
+        line[2].lower(),  # Cargo Type
         line[3],  # Fame
         line[4][1:],  # Special Text
         line[5],  # Kind
@@ -217,7 +221,8 @@ def process_gift_entry(line, assets, save_path, unused_art):
                     break
 
             unused_art.discard(best_match)
-            fg = Image.open(f"assets/gifts/{best_match}").convert("RGBA")
+            fg = Image.open(ASSETS_DIR / "gifts" /
+                            f"{best_match}").convert("RGBA")
         except FileNotFoundError:
             print(missing_art_error(name))
             fg = assets["none"].copy().convert("RGBA")
@@ -252,6 +257,7 @@ def process_gift_entry(line, assets, save_path, unused_art):
                 font=assets["font"],
                 anchor="mm",
             )
+
         # ring.paste(
         #     orb, ((ring.width - orb.width) // 2, ring.height - orb.height - 100), orb
         # )
@@ -315,8 +321,9 @@ def process_gift_entry(line, assets, save_path, unused_art):
         print(colors.RED + f"ERROR processing {name}: {e}" + colors.RESET)
 
 
-def compile_all(clean: bool = True, open_output: bool = False):
-    save_path = "output/gifts"
+def compile_all(clean: bool = True, open_output: bool = True):
+    save_path = OUTPUT_DIR / "gifts"
+
     if clean:
         clear_directory(save_path)
 
@@ -327,7 +334,7 @@ def compile_all(clean: bool = True, open_output: bool = False):
     if not assets:
         return
 
-    unused_art = list_art_files("assets/gifts/")
+    unused_art = list_art_files(ASSETS_DIR / "gifts/")
     with open("raw_spreadsheet_data/gifts.csv") as file:
         reader = csv.reader(file)
         next(reader)
