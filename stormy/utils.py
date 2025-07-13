@@ -2,6 +2,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import os
 
+
 def saved_message(card_name):
     print(colors.GREEN + "Exported: " + colors.RESET + f"{card_name}.tiff")
 
@@ -18,7 +19,6 @@ def end(line):
     )
 
 
-# WARNING fails with TIFF files
 def rmbg(image):
     for x in range(image.width):
         for y in range(image.height):
