@@ -2,7 +2,6 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import os
 
-
 def saved_message(card_name):
     print(colors.GREEN + "Exported: " + colors.RESET + f"{card_name}.tiff")
 

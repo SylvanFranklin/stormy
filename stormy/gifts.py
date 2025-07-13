@@ -9,11 +9,9 @@ from stormy.utils import (
     ASSETS_DIR
 )
 
-import math
 import csv
 from PIL import Image, ImageDraw, ImageFont
 import os
-
 
 textless = True
 
@@ -21,9 +19,7 @@ textless = True
 def load_assets():
     try:
         print("Loading assets...")
-
         path = ASSETS_DIR / "components"
-        iconpath = ASSETS_DIR / "icons"
 
         assets = {
             "font": ImageFont.truetype("assets/regular.ttf", 120),
@@ -31,7 +27,6 @@ def load_assets():
             "fameorb": Image.open(f"{path}/fame.png").convert("RGBA"),
             "weapon": Image.open(f"{path}/weapon.png").convert("RGBA"),
             "armor": Image.open(f"{path}/armor.png").convert("RGBA"),
-            "ranged": Image.open(f"{path}/ranged.png").convert("RGBA"),
             "expert": Image.open(f"{path}/expert.png").convert("RGBA"),
             "notrade": Image.open(f"{path}/notrade.png").convert("RGBA"),
             "pot": Image.open(f"{path}/heavy.png").convert("RGBA"),
@@ -39,19 +34,7 @@ def load_assets():
             "heavy": Image.open(f"{path}/heavy.png").convert("RGBA"),
             "medium": Image.open(f"{path}/medium.png").convert("RGBA"),
             "light": Image.open(f"{path}/light.png").convert("RGBA"),
-            # "none": Image.open(f"{path}/assets/NONE.png").convert("RGBA"),
-            "icons": {
-                "light": Image.open(f"{iconpath}/light.png").convert("RGBA"),
-                "medium": Image.open(f"{iconpath}/medium.png").convert("RGBA"),
-                "heavy": Image.open(f"{iconpath}/heavy.png").convert("RGBA"),
-                "wits": Image.open(f"{iconpath}/wits.png").convert("RGBA"),
-                "charm": Image.open(f"{iconpath}/charm.png").convert("RGBA"),
-                "might": Image.open(f"{iconpath}/might.png").convert("RGBA"),
-            },
         }
-
-        for icon in assets["icons"]:
-            icon = rmbg(assets["icons"][icon])
 
         print(colors.GREEN + "Assets loaded successfully." + colors.RESET)
         return assets
@@ -61,45 +44,11 @@ def load_assets():
 
 
 def determine_ring(kind, weight, assets, ability):
-    # multiple type cases
-    if "w" in kind and "r" in kind:
-        # split vertically and combine half and half while preserving transparency
-        w = assets["weapon"].copy()
-        r = assets["ranged"].copy()
-        half = w.width // 2
-        if kind.index("w") < kind.index("r"):
-            w_half = w.crop((0, 0, half, w.height))
-            r.paste(w_half, (0, 0), w_half)
-            return r
-        else:
-            r_half = r.crop((half, 0, r.width, r.height))
-            w.paste(r_half, (half, 0), r_half)
-            return w
 
-    elif "w" in kind and "a" in kind:
-        # split horizontally and combine half and half while preserving transparency
-        w = assets["weapon"].copy()
-        a = assets["armor"].copy()
-        half = w.height // 2
-        # determine which comes first in the string
-        if kind.index("w") < kind.index("a"):
-            w_half = w.crop((0, 0, w.width, half))
-            a.paste(w_half, (0, 0), w_half)
-            return a
-        else:
-            a_half = a.crop((0, half, a.width, a.height))
-            w.paste(a_half, (0, half), a_half)
-            return w
-
-    elif "w" in kind:
-        return assets["light"].copy()
+    if "w" in kind:
         return assets["weapon"].copy()
     elif "a" in kind:
-        return assets["light"].copy()
         return assets["armor"].copy()
-    elif "r" in kind:
-        return assets["light"].copy()
-        return assets["ranged"].copy()
     elif "x" in kind:
         return assets["expert"].copy()
     elif "p" in weight:
@@ -167,7 +116,6 @@ def process_special_text(draw, font, name, special_text, ring):
 def extract_line_data(line, debug=False):
     name = clean_raw_name(line[0].upper().replace(" ", ""))
     cargo_type, fame, special_text, kind, additional_rule, tradable, symbology = (
-        line[2].lower(),  # Cargo Type
         line[2].lower(),  # Cargo Type
         line[3],  # Fame
         line[4][1:],  # Special Text
@@ -243,7 +191,7 @@ def process_gift_entry(line, assets, save_path, unused_art):
                 assets["notrade"],
             )
 
-        bg.paste(fg, (center[0], center[1] - 100), fg)
+        bg.paste(fg, (center[0], center[1]), fg)
         double = True
         if "n" in kind and cargo_type != "p":
             double = False
@@ -258,31 +206,9 @@ def process_gift_entry(line, assets, save_path, unused_art):
                 anchor="mm",
             )
 
-        # ring.paste(
-        #     orb, ((ring.width - orb.width) // 2, ring.height - orb.height - 100), orb
-        # )
-
         if special_text and not textless:
             process_special_text(
                 draw, assets["font"], name, special_text, ring)
-
-        icons = []
-        for s in symbology.lower():
-            match s:
-                case "b":
-                    icon = assets["icons"]["heavy"].copy()
-                case "m":
-                    icon = assets["icons"]["medium"].copy()
-                case "e":
-                    icon = assets["icons"]["light"].copy()
-                case "f":
-                    icon = assets["icons"]["might"].copy()
-                case "w":
-                    icon = assets["icons"]["wits"].copy()
-                case "h":
-                    icon = assets["icons"]["charm"].copy()
-
-            icons.append(icon)
 
         # print(f"Name: {name}")
         # print(f"Special Text: {special_text}")
@@ -292,26 +218,10 @@ def process_gift_entry(line, assets, save_path, unused_art):
         # print(f"Additional Rule: {additional_rule}")
         # print(f"Tradable: {tradable}")
 
-        icon_size = 130
-        margin = 5.5
-        center = ((ring.width - icon_size) // 2,
-                  (ring.height - icon_size) // 2)
-        theta = (3 * math.pi / 2) - (math.pi / margin) * (len(icons) - 1) / 2
-        r = 0.38 * ring.height
-
-        for icon in icons:
-            icon.thumbnail((icon_size, icon_size))
-            x, y = int(r * math.cos(theta)), int(r * math.sin(theta))
-            theta += math.pi / margin
-            bg.paste(
-                icon,
-                (center[0] - x, center[1] - y),
-                icon,
-            )
-
+        bg.resize((450, 450))
         bg.paste(ring, (0, 0), ring)
-        ring.close()
         fg.close()
+        ring.close()
         final = bg.convert("RGBA")
         final.resize((450, 450))
         final.save(os.path.join(save_path, f"{name}.png"), dpi=(300, 300))
