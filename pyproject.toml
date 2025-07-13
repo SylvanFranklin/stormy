@@ -5,7 +5,7 @@ description = "stormy seas board game"
 authors = [{ name = "SylvanFranklin", email = "sylvanfranklin@icloud.com" }]
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["pillow (>=11.1.0,<12.0.0)", "requests (>=2.32.3,<3.0.0)"]
+dependencies = ["pillow (>=11.1.0,<12.0.0)", "requests (>=2.32.3,<3.0.0)", "typst (>=0.13.2,<0.14.0)"]
 
 [tool.poetry]
 packages = [{ include = "stormy" }]
